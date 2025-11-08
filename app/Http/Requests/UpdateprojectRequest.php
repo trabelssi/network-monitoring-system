@@ -97,12 +97,5 @@ class UpdateProjectRequest extends FormRequest
         if ($this->has('products') && empty($this->products)) {
             $this->merge(['products' => []]);
         }
-
-        // Log the request data for debugging
-        Log::info('Project update request data:', [
-            'all' => $this->all(),
-            'members' => $this->members,
-            'products' => $this->products,
-        ]);
     }
 }

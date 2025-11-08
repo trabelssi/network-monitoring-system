@@ -69,12 +69,6 @@ class UniteMatériel extends Model
         return $this->hasMany(Device::class, 'unit_id');
     }
 
-    public function wirelessAccessPoints()
-    {
-        // Remove this relationship as it doesn't exist in new schema
-        // return $this->hasMany(WirelessAccessPoint::class);
-    }
-
     /**
      * Scopes
      */

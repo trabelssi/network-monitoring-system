@@ -104,7 +104,6 @@ export default function DeviceDiscoveryShow({ auth, discovery, departments, unit
     };
 
     const openAssignmentModal = () => {
-        console.log('Opening modal with data:', { departments, units });
         setShowAssignmentModal(true);
         setErrorMessage('');
         setSuccessMessage('');
