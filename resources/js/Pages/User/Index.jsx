@@ -143,7 +143,6 @@ const getTimeSince = (dateString) => {
 export default function Index({ auth , users , queryParams = null, success, deactivatedUsers }) {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    console.log('Auth user data:', auth.user);
     queryParams = queryParams || {}
     const searchFieldChange = (name, value) => {
        if (value) {
@@ -758,7 +757,6 @@ export default function Index({ auth , users , queryParams = null, success, deac
                     <div className="mt-8 bg-black/40 backdrop-blur-lg border border-white/10 overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-100">
                         <h2 className="text-xl font-semibold mb-4 text-gray-300">Utilisateurs Désactivés</h2>
                         <div className="overflow-x-auto">
-                            {console.log('Deactivated Users:', deactivatedUsers)}
                             <table className="w-full whitespace-nowrap">
                                 <thead>
                                     <tr className="text-left font-bold">

@@ -133,34 +133,6 @@ public function index()
         ->orderBy('name')
         ->get();
 
-    // Log the query for debugging
-    Log::info('Intervention query:', [
-        'sql' => $query->toSql(),
-        'bindings' => $query->getBindings(),
-        'filters' => $request->all()
-    ]);
-
-    // Log interventions data before resource transformation
-    Log::info('Raw Interventions Data (Index):', [
-        'count' => $interventions->count(),
-        'data_sample' => $interventions->take(5)->map(function($intervention) {
-            return [
-                'id' => $intervention->id,
-                'user_id' => $intervention->user_id,
-                'user_name' => $intervention->user->name ?? null,
-                'user_is_active' => $intervention->user->is_active ?? null,
-                'user_deleted_at' => $intervention->user->deleted_at ?? null,
-                'task_id' => $intervention->task_id,
-                'task_assigned_user_name' => $intervention->task->assignedUser->name ?? null,
-                'task_assigned_user_is_active' => $intervention->task->assignedUser->is_active ?? null,
-                'task_assigned_user_deleted_at' => $intervention->task->assignedUser->deleted_at ?? null,
-                'task_created_by_name' => $intervention->task->createdBy->name ?? null,
-                'task_created_by_is_active' => $intervention->task->createdBy->is_active ?? null,
-                'task_created_by_deleted_at' => $intervention->task->createdBy->deleted_at ?? null,
-            ];
-        })
-    ]);
-
     return inertia('Intervention/Index', [
         'interventions' => InterventionResource::collection($interventions),
         'tasks' => $tasks,
@@ -215,48 +187,14 @@ public function show(Intervention $intervention)
                 ]);
             }
         ]);
-        
-        // Log raw intervention data to check user statuses
-        Log::info('Intervention Show Raw Data:', [
-            'intervention_id' => $intervention->id,
-            'user' => $intervention->user ? [
-                'id' => $intervention->user->id,
-                'name' => $intervention->user->name,
-                'is_active' => $intervention->user->is_active,
-                'deleted_at' => $intervention->user->deleted_at,
-            ] : null,
-            'task_assignedUser' => $intervention->task->assignedUser ? [
-                'id' => $intervention->task->assignedUser->id,
-                'name' => $intervention->task->assignedUser->name,
-                'is_active' => $intervention->task->assignedUser->is_active,
-                'deleted_at' => $intervention->task->assignedUser->deleted_at,
-            ] : null,
-            'task_createdBy' => $intervention->task->createdBy ? [
-                'id' => $intervention->task->createdBy->id,
-                'name' => $intervention->task->createdBy->name,
-                'is_active' => $intervention->task->createdBy->is_active,
-                'deleted_at' => $intervention->task->createdBy->deleted_at,
-            ] : null,
-        ]);
 
         $resource = new InterventionResource($intervention);
         $data = $resource->toArray(request());
-        
-        Log::info('Transformed intervention data:', [
-            'intervention_id' => $data['id'],
-            'user' => $data['user'] ?? null,
-            'task_assignedUser' => $data['task']['assignedUser'] ?? null,
-            'task_createdBy' => $data['task']['createdBy'] ?? null,
-        ]);
 
         return inertia('Intervention/Show', [
             'intervention' => $data
         ]);
     } catch (\Exception $e) {
-        Log::error('Error in intervention show:', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
         throw $e;
     }
 }

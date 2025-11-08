@@ -148,14 +148,6 @@ class DeviceStatusHistoryController extends Controller
                 'current_status' => $device->is_alive ? 'online' : 'offline',
             ];
 
-            // Log successful response for debugging
-            \Log::info('DeviceStatusHistoryController show success', [
-                'device_id' => $device->id,
-                'history_count' => $history->count(),
-                'total_count' => $history->total(),
-                'filters' => $request->only(['status', 'date_from', 'date_to', 'sort', 'direction'])
-            ]);
-
             $filters = $request->only(['status', 'date_from', 'date_to', 'sort', 'direction']);
             
             // Ensure filters is an associative array (object)
@@ -170,12 +162,6 @@ class DeviceStatusHistoryController extends Controller
                 'stats' => $stats,
             ]);
         } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('DeviceStatusHistoryController show error: ' . $e->getMessage(), [
-                'device_id' => $device->id ?? 'unknown',
-                'trace' => $e->getTraceAsString()
-            ]);
-            
             $filters = $request->only(['status', 'date_from', 'date_to', 'sort', 'direction']);
             
             // Ensure filters is an associative array (object)

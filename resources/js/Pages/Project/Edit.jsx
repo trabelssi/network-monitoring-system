@@ -119,16 +119,6 @@ export default function Edit({auth, project, users}) {
       formData.append('image', data.image);
     }
 
-    // Debug log
-    console.log('Submitting form with data:', {
-      name: data.name,
-      description: data.description,
-      reference: data.reference,
-      members: memberIds,
-      products: productNames,
-      hasImage: data.image instanceof File
-    });
-
     // Use post instead of put for proper FormData handling
     router.post(route('projects.update', project.id), formData, {
       forceFormData: true,
@@ -149,7 +139,6 @@ export default function Edit({auth, project, users}) {
       },
       onError: (errors) => {
         setIsSubmitting(false);
-        console.error('Form submission errors:', errors);
         
         Object.keys(errors).forEach(key => {
           setError(key, errors[key]);

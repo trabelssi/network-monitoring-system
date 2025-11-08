@@ -116,7 +116,6 @@ export default function TasksTable({ tasks, projects = [], queryParams = null, c
         localStorage.removeItem('taskSearchHistory');
     };
 
-    // Remove console.log statements and optimize data loading
     useEffect(() => {
         const newParams = { ...queryParams };
         
@@ -152,7 +151,6 @@ export default function TasksTable({ tasks, projects = [], queryParams = null, c
         }
     }, [queryParams, auth.user.role]);
 
-    // Optimize search debouncing
     const debouncedSearch = useCallback(
         debounce((value) => {
             if (!value.trim()) return;
@@ -606,7 +604,6 @@ export default function TasksTable({ tasks, projects = [], queryParams = null, c
         return memoizedTasks;
     }, [memoizedTasks]);
 
-    // Optimize task row rendering
     const TaskRow = memo(({ task }) => (
         <tr className="group hover:bg-cyan-500/5 transition-colors duration-200">
             <td className="px-4 py-3 text-gray-300 font-medium">{task.id}</td>
@@ -688,7 +685,6 @@ export default function TasksTable({ tasks, projects = [], queryParams = null, c
         </tr>
     ));
 
-    // Use the optimized TaskRow component in the table
     const renderTasks = () => {
         if (isLoading) {
             return (

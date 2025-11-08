@@ -19,8 +19,6 @@ import {
 import { useState } from 'react';
 
 export default function Show({ auth, intervention }) {
-    console.log('Raw intervention data:', intervention);
-
     if (!intervention) {
         return (
             <AuthenticatedLayout user={auth.user}>

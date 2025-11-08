@@ -64,11 +64,7 @@ class DashboardController extends Controller
                 $dateRange
             );
             
-            // Get the raw tasks first to debug
-            $rawTasks = $activeTasksQuery->get();
-            
-            // Transform to resources
-            $activeTasks = TaskResource::collection($rawTasks);
+            $activeTasks = TaskResource::collection($activeTasksQuery->get());
 
             return inertia('Dashboard', array_merge(
                 $counts,
@@ -499,13 +495,6 @@ class DashboardController extends Controller
             $projectFilter = request('projectFilter', 'all');
             $statusFilter = request('interventionStatusFilter', 'all');
 
-            // Log request parameters
-            \Log::info('Interventions per project request:', [
-                'timeRange' => $timeRange,
-                'projectFilter' => $projectFilter,
-                'statusFilter' => $statusFilter
-            ]);
-
             $query = DB::table('projects')
                 ->leftJoin('products', 'projects.id', '=', 'products.project_id')
                 ->leftJoin('product_task', 'products.id', '=', 'product_task.product_id')
@@ -518,72 +507,38 @@ class DashboardController extends Controller
                     DB::raw('SUM(CASE WHEN interventions.status = "rejected" THEN 1 ELSE 0 END) as refused'),
                     DB::raw('SUM(CASE WHEN interventions.status IS NULL OR interventions.status = "pending" THEN 1 ELSE 0 END) as pending')
                 )
-                ->whereNotNull('interventions.id'); // Only include records with interventions
-
-            // Log the initial query
-            \Log::info('Initial query:', [
-                'sql' => $query->toSql(),
-                'bindings' => $query->getBindings()
-            ]);
+                ->whereNotNull('interventions.id');
 
             // Apply time range filter
             if ($timeRange !== 'all') {
                 $dateRange = $this->getDateRange($timeRange);
                     if ($dateRange) {
                         $query->whereBetween('interventions.created_at', [$dateRange['start'], $dateRange['end']]);
-                    // Log time range filter
-                    \Log::info('Applied time range filter:', [
-                        'start' => $dateRange['start'],
-                        'end' => $dateRange['end']
-                    ]);
                     }
             }
 
             // Apply project filter
             if ($projectFilter !== 'all') {
                 $query->where('projects.name', $projectFilter);
-                // Log project filter
-                \Log::info('Applied project filter:', [
-                    'projectFilter' => $projectFilter
-                ]);
             }
 
             // Apply status filter
             if ($statusFilter !== 'all') {
                 $query->where('interventions.status', $statusFilter);
-                // Log status filter
-                \Log::info('Applied status filter:', [
-                    'statusFilter' => $statusFilter
-                ]);
             }
-
-            // Log final query before execution
-            \Log::info('Final query:', [
-                'sql' => $query->toSql(),
-                'bindings' => $query->getBindings()
-            ]);
 
             $results = $query->groupBy('projects.id', 'projects.name')
                 ->orderBy('projects.name')
                 ->get()
                 ->map(function ($row) {
-                    $mapped = [
+                    return [
                         'project' => $row->project,
                         'interventions' => (int) $row->total_interventions,
                         'approved' => (int) $row->approved,
                         'refused' => (int) $row->refused,
                         'pending' => (int) $row->pending
                     ];
-                    // Log each mapped row
-                    \Log::info('Mapped intervention row:', $mapped);
-                    return $mapped;
                 });
-
-            // Log the final results
-            \Log::info('Final interventions per project results:', [
-                'count' => $results->count(),
-                'data' => $results->toArray()
-            ]);
 
             return $results;
 

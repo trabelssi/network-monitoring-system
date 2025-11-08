@@ -19,17 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Get all users first to debug
-        $allUsers = User::withTrashed()->get();
-        \Log::info('All Users:', [
-            'total' => $allUsers->count(),
-            'active' => $allUsers->where('is_active', true)->whereNull('deleted_at')->count(),
-            'inactive' => $allUsers->where('is_active', false)->count(),
-            'deleted' => $allUsers->whereNotNull('deleted_at')->count()
-        ]);
-
         $query = User::query();
-        $deactivatedQuery = User::withTrashed()->select('id', 'name', 'email', 'role', 'is_active', 'deleted_at'); // Explicitly select columns
+        $deactivatedQuery = User::withTrashed()->select('id', 'name', 'email', 'role', 'is_active', 'deleted_at');
     
         $sortField = request("sort_field", 'created_at');
         $sortDirection = request("sort_direction", 'desc');
@@ -66,14 +57,6 @@ class UserController extends Controller
             ->paginate(10)
             ->onEachSide(1)
             ->withQueryString();
-
-        // Debug deactivated users
-        \Log::info('Deactivated Users Query:', [
-            'total' => $deactivatedUsers->total(),
-            'current_page' => $deactivatedUsers->currentPage(),
-            'per_page' => $deactivatedUsers->perPage(),
-            'data' => $deactivatedUsers->items()
-        ]);
     
         return inertia("User/Index", [
             "users" => UserCrudResource::collection($users),
@@ -163,18 +146,11 @@ class UserController extends Controller
         $user->is_active = false;
         $user->save();
         
+                
         // Then perform soft delete
         $user->delete();
 
-        // Debug the deactivated user
-        \Log::info('User Deactivated:', [
-            'id' => $user->id,
-            'name' => $user->name,
-            'is_active' => $user->is_active,
-            'deleted_at' => $user->deleted_at
-        ]);
-        
-        return to_route("users.index")->with("success", "Utilisateur \"$name\" a été désactivé avec succès");
+        return redirect()->route('users.index');
     }
 
     /**

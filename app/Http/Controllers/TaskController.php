@@ -39,7 +39,6 @@ class TaskController extends Controller
             // Search functionality
             if (request()->filled('name')) {
                 $searchTerm = request('name');
-                \Log::info('Searching for term:', ['term' => $searchTerm]);
                 $query->where(function($q) use ($searchTerm) {
                     $q->where('name', 'LIKE', '%' . $searchTerm . '%')
                       ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
@@ -48,7 +47,6 @@ class TaskController extends Controller
 
         // Project filter
         if (request()->filled('project_id')) {
-                \Log::info('Filtering by project:', ['project_id' => request('project_id')]);
             $query->whereHas('products.project', function($q) {
                     $q->where('projects.id', request('project_id'));
             });
@@ -56,7 +54,6 @@ class TaskController extends Controller
 
         // Product filter
         if (request()->filled('product_id')) {
-                \Log::info('Filtering by product:', ['product_id' => request('product_id')]);
             $query->whereHas('products', function($q) {
                     $q->where('products.id', request('product_id'));
             });
@@ -64,13 +61,11 @@ class TaskController extends Controller
 
         // Status filter
         if (request()->filled('status')) {
-                \Log::info('Filtering by status:', ['status' => request('status')]);
             $query->where('status', request('status'));
         }
 
         // Priority filter
         if (request()->filled('priority')) {
-                \Log::info('Filtering by priority:', ['priority' => request('priority')]);
             $query->where('priority', request('priority'));
         }
 
@@ -81,35 +76,20 @@ class TaskController extends Controller
                 $end = Carbon::parse(request('date_end'))->endOfDay();
                 
                 if ($start->isValid() && $end->isValid() && $start <= $end) {
-                        \Log::info('Filtering by date range:', [
-                            'start' => $start->toDateString(),
-                            'end' => $end->toDateString()
-                        ]);
                     $query->whereBetween('created_at', [$start, $end]);
-                } else {
-                    \Log::warning('Invalid date range provided', [
-                        'start' => request('date_start'),
-                        'end' => request('date_end')
-                    ]);
                 }
             } catch (\Exception $e) {
-                \Log::error('Error parsing date range', [
-                    'start' => request('date_start'),
-                    'end' => request('date_end'),
-                    'error' => $e->getMessage()
-                ]);
+                // Invalid date range provided
             }
         }
 
             // Assigned to me filter
             if (request('assigned_to_me') === '1') {
-                \Log::info('Filtering tasks assigned to user:', ['user_id' => $user->id]);
                 $query->where('assigned_user_id', $user->id);
             }
 
             // Created by me filter
             if (request('created_by_me') === '1') {
-                \Log::info('Filtering tasks created by user:', ['user_id' => $user->id]);
                 $query->where('created_by', $user->id);
         }
 
@@ -126,11 +106,6 @@ class TaskController extends Controller
         $sortDirection = in_array(request('sort_direction'), ['asc', 'desc']) 
             ? request('sort_direction') 
             : 'desc';
-
-            \Log::info('Sorting tasks:', [
-                'field' => $sortField,
-                'direction' => $sortDirection
-            ]);
 
         // Special sorting for relationship fields
         if (in_array($sortField, ['assigned_user_id', 'created_by'])) {
@@ -169,12 +144,6 @@ class TaskController extends Controller
             ->values()
             ->all();
 
-            \Log::info('Tasks query completed', [
-                'total_tasks' => $tasks->total(),
-                'current_page' => $tasks->currentPage(),
-                'per_page' => $tasks->perPage()
-        ]);
-
         return inertia("Task/Index", [
             "tasks" => TaskResource::collection($tasks),
             'projects' => $projects,
@@ -184,11 +153,6 @@ class TaskController extends Controller
         ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error in TaskController@index', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
             return inertia("Task/Index", [
                 "tasks" => [],
                 'projects' => [],
@@ -204,7 +168,6 @@ class TaskController extends Controller
      */
     public function create()
     {
-        // Optimize queries by selecting only needed fields and eager loading relationships
         $products = Product::with(['project:id,name'])
             ->select('id', 'name', 'project_id')
             ->orderBy('name')
@@ -269,18 +232,9 @@ class TaskController extends Controller
             // Send notification to assigned user if different from creator
             if (isset($data['assigned_user_id']) && $data['assigned_user_id'] !== Auth::id()) {
                 try {
-                    Log::info('Sending notification to assigned user', [
-                        'task_id' => $task->id,
-                        'assigned_user_id' => $assignedUser->id,
-                        'assigned_user_email' => $assignedUser->email
-                    ]);
                     $assignedUser->notify(new TaskAssignedNotification($task, Auth::user()));
                 } catch (\Exception $e) {
-                    Log::error('Failed to send notification to assigned user', [
-                        'error' => $e->getMessage(),
-                        'task_id' => $task->id,
-                        'assigned_user_id' => $assignedUser->id
-                    ]);
+                    // Failed to send notification to assigned user
                 }
             }
 
@@ -302,15 +256,11 @@ class TaskController extends Controller
                 foreach ($observers as $observer) {
                     try {
                         if (!$observer->email) {
-                            continue;
                         }
+                        
                         $observer->notify(new TaskObserverNotification($task, $creator));
                     } catch (\Exception $e) {
-                        Log::error('Failed to send notification to observer', [
-                            'error' => $e->getMessage(),
-                            'task_id' => $task->id,
-                            'observer_id' => $observer->id
-                        ]);
+                        // Failed to send notification to observer
                     }
                 }
             }
@@ -370,33 +320,6 @@ class TaskController extends Controller
                 $query->select('id', 'name', 'is_active', 'deleted_at');
                 }]);
             },
-        ]);
-
-        // Log raw task data with interventions and users for debugging
-        Log::info('Task Show Raw Data:', [
-            'task_id' => $task->id,
-            'assignedUser' => $task->assignedUser ? [
-                'id' => $task->assignedUser->id,
-                'name' => $task->assignedUser->name,
-                'is_active' => $task->assignedUser->is_active,
-                'deleted_at' => $task->assignedUser->deleted_at,
-            ] : null,
-            'createdBy' => $task->createdBy ? [
-                'id' => $task->createdBy->id,
-                'name' => $task->createdBy->name,
-                'is_active' => $task->createdBy->is_active,
-                'deleted_at' => $task->createdBy->deleted_at,
-            ] : null,
-            'interventions' => $task->interventions->map(function($intervention) {
-                return [
-                    'id' => $intervention->id,
-                    'user_id' => $intervention->user_id,
-                    'user_name' => $intervention->user->name ?? 'User not loaded or null',
-                    'user_is_active' => $intervention->user->is_active ?? 'N/A',
-                    'user_deleted_at' => $intervention->user->deleted_at ?? 'N/A',
-                    'description' => $intervention->description,
-                ];
-            }),
         ]);
 
         return inertia("Task/Show", [
@@ -484,13 +407,8 @@ class TaskController extends Controller
                     'updated_at' => now()->format('Y-m-d H:i:s'),
                 ],
             ]);
-            Log::info('Task update logged successfully', ['task_id' => $task->id]);
         } catch (\Exception $e) {
-            Log::error('Failed to log task update', [
-                'task_id' => $task->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            // Failed to log task update
         }
 
         // Sync observers
@@ -512,10 +430,7 @@ class TaskController extends Controller
                     }
                 }
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Error sending observer notifications', [
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
+                // Error sending observer notifications
             }
         } else {
             $task->observers()->detach();
@@ -549,18 +464,13 @@ class TaskController extends Controller
                     'task_name' => $name,
                     'products' => $task->products->pluck('name')->toArray(),
                     'status' => $task->status,
-                    'assigned_user_name' => $task->assignedUser->name ?? null,
+                                        'assigned_user_name' => $task->assignedUser->name ?? null,
                     'deleted_by' => Auth::user()->name,
                     'deleted_at' => now()->format('Y-m-d H:i:s'),
                 ],
             ]);
-            Log::info('Task deletion logged successfully', ['task_id' => $task->id]);
         } catch (\Exception $e) {
-            Log::error('Failed to log task deletion', [
-                'task_id' => $task->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            // Failed to log task deletion
         }
 
         return to_route("tasks.index" )->with("success", "Tâche \"$name\" a été supprimée avec succès");
