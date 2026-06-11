@@ -4,7 +4,9 @@ A comprehensive enterprise-grade network monitoring and IT service management sy
 
 > **Internship Project** - Developed during an internship at **Sancella Tunisia**
 
-![Main Dashboard](app%20images/main-dashboard.png)
+### Welcome Page
+![Welcome](app%20images/Welcome.png)
+*Professional landing page*
 
 ## 🏢 About the Project
 
@@ -53,9 +55,7 @@ This project was developed as part of an internship program at **Sancella Tunisi
 
 ## 📸 Screenshots
 
-### Welcome Page
-![Welcome](app%20images/Welcome.png)
-*Professional landing page*
+
 
 ### Welcome & Authentication
 ![Authentication](app%20images/login-singup-passwordforget.png)
