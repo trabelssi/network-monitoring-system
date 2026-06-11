@@ -53,6 +53,10 @@ This project was developed as part of an internship program at **Sancella Tunisi
 
 ## 📸 Screenshots
 
+### Welcome Page
+![Welcome](app%20images/Welcome.png)
+*Professional landing page*
+
 ### Welcome & Authentication
 ![Authentication](app%20images/login-singup-passwordforget.png)
 *Secure login, registration, and password recovery*
@@ -93,9 +97,7 @@ This project was developed as part of an internship program at **Sancella Tunisi
 ![Notifications](app%20images/notifications.png)
 *Instant notifications for all system activities*
 
-### Welcome Page
-![Welcome](app%20images/Welcome.png)
-*Professional landing page*
+
 
 ## 🛠️ Technology Stack
 
