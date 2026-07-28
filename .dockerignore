@@ -1,0 +1,66 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+MIGRATION_LOG.md
+*.md
+app images
+
+# IDE and editor files
+.idea
+.vscode
+.vs
+*.swp
+*.swo
+*~
+
+# Dependencies (will be installed in container)
+/node_modules
+/vendor
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+/public/hot
+/public/storage
+/public/build
+
+# Storage directories (mounted as volumes)
+/storage/*.key
+/storage/app/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+
+# Cache directories
+/bootstrap/cache/*
+
+# Testing
+.phpunit.result.cache
+/tests
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# NPM/Yarn
+npm-debug.log
+yarn-error.log
+.npm
+.yarn
+
+# Docker files (don't copy into the image)
+docker-compose*.yml
+Dockerfile*
+
+# CI/CD
+.github
+.gitlab-ci.yml
