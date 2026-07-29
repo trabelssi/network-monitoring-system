@@ -100,7 +100,7 @@ async def test_laravel_api_client_stub():
     with patch("httpx.AsyncClient") as mock_client_class:
         mock_client = AsyncMock()
         mock_client_class.return_value.__aenter__.return_value = mock_client
-        
+
         mock_response = Mock()
         mock_response.status_code = 201
         mock_client.post = AsyncMock(return_value=mock_response)
@@ -134,7 +134,7 @@ async def test_laravel_api_client_stub():
     with patch("httpx.AsyncClient") as mock_client_class:
         mock_client = AsyncMock()
         mock_client_class.return_value.__aenter__.return_value = mock_client
-        
+
         mock_response = Mock()
         mock_response.status_code = 500
         mock_response.text = "Internal Server Error"
@@ -701,7 +701,9 @@ def test_syslog_parse_no_priority():
     event = listener.parse_syslog(syslog_data, addr)
 
     assert event is not None
-    assert event.severity == EventSeverity.CRITICAL  # Priority 0 = Emergency per RFC 3164
+    assert (
+        event.severity == EventSeverity.CRITICAL
+    )  # Priority 0 = Emergency per RFC 3164
 
 
 def test_snmp_trap_parse_exception_handling():
