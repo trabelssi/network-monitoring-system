@@ -160,3 +160,6 @@ python-service/*.pyc
 python-service/.env
 python-service/venv/
 python-service/.pytest_cache/
+
+# Documentation (internal reference only)
+docs/
