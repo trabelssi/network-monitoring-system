@@ -7,8 +7,11 @@ pymysql==1.1.1
 cryptography==44.0.0
 
 # Network polling (Steps 2-3)
-pysnmp==7.1.14
-pyasn1==0.6.1
+# STOPGAP: Using pysnmp-lextudio 5.0.34 fork for v4/v5 synchronous API compatibility
+# This is an unmaintained fork - flagged as tech debt for future pysnmp v7 async migration
+# See MIGRATION_LOG.md for full context and migration plan
+pysnmp-lextudio==5.0.34
+pyasn1==0.4.8  # Pinned for pysnmp-lextudio 5.x compatibility
 icmplib==3.0.4
 
 # Environment variables

@@ -61,10 +61,15 @@ class TestDiscoveryQueueWriter:
             is_alive=True, status=PingStatus.SUCCESS, response_time_ms=12.5
         )
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.lastrowid = 123
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             result_id = writer.write_discovery("192.168.1.1", ping_result)
 
@@ -85,8 +90,9 @@ class TestDiscoveryQueueWriter:
             assert data["sys_descr"] is None
             assert data["sys_name"] is None
 
-            # Verify commit was called
-            assert mock_conn.return_value.__enter__.return_value.commit.called
+            # Verify commit and close were called
+            assert mock_connection.commit.called
+            assert mock_connection.close.called
 
     def test_write_discovery_with_snmp(self):
         """Test writing discovery with SNMP result"""
@@ -105,10 +111,15 @@ class TestDiscoveryQueueWriter:
             sys_location="Server Room A",
         )
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.lastrowid = 456
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             result_id = writer.write_discovery("192.168.1.10", ping_result, snmp_result)
 
@@ -133,9 +144,14 @@ class TestDiscoveryQueueWriter:
             error="Request timeout",
         )
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             writer.write_discovery("192.168.1.100", ping_result)
 
@@ -162,9 +178,14 @@ class TestDiscoveryQueueWriter:
         ping_result = PingResult(is_alive=True, status=PingStatus.SUCCESS)
         snmp_result = SNMPResult(available=True, sys_descr="Test")
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             writer.write_discovery("192.168.1.1", ping_result, snmp_result)
 
@@ -202,14 +223,19 @@ class TestDeviceStatusWriter:
             is_alive=True, status=PingStatus.SUCCESS, response_time_ms=10.0
         )
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             # Current status: online
             mock_cursor.fetchone.return_value = {
                 "is_alive": True,
                 "snmp_available": False,
             }
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             status_changed = writer.update_device_status(1, ping_result)
 
@@ -233,14 +259,19 @@ class TestDeviceStatusWriter:
             is_alive=False, status=PingStatus.TIMEOUT, response_time_ms=None
         )
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             # Current status: online
             mock_cursor.fetchone.return_value = {
                 "is_alive": True,
                 "snmp_available": False,
             }
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             status_changed = writer.update_device_status(1, ping_result)
 
@@ -259,21 +290,26 @@ class TestDeviceStatusWriter:
         ping_result = PingResult(is_alive=True, status=PingStatus.SUCCESS)
         snmp_result = SNMPResult(available=True, sys_descr="Test")
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = {
                 "is_alive": False,
                 "snmp_available": False,
             }
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             writer.update_device_status(1, ping_result, snmp_result)
 
             # Verify snmp_available updated
             update_calls = [
-                call[0]
+                call[0][0]  # First positional arg (SQL string)
                 for call in mock_cursor.execute.call_args_list
-                if "UPDATE device" in call[0]
+                if "UPDATE device" in call[0][0]
             ]
             assert len(update_calls) > 0
             assert "snmp_available" in update_calls[0]
@@ -286,13 +322,18 @@ class TestDeviceStatusWriter:
             is_alive=True, status=PingStatus.SUCCESS, response_time_ms=12.0
         )
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = {
                 "is_alive": True,
                 "snmp_available": False,
             }
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             writer.update_device_status(1, ping_result)
 
@@ -305,13 +346,18 @@ class TestDeviceStatusWriter:
 
         ping_result = PingResult(is_alive=False, status=PingStatus.TIMEOUT)
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = {
                 "is_alive": False,
                 "snmp_available": False,
             }
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             writer.update_device_status(1, ping_result)
 
@@ -329,13 +375,18 @@ class TestDeviceStatusWriter:
 
         ping_result = PingResult(is_alive=True, status=PingStatus.SUCCESS)
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = {
                 "is_alive": False,
                 "snmp_available": False,
             }
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             writer.update_device_status(1, ping_result)
 
@@ -368,14 +419,19 @@ class TestDeviceStatusWriter:
 
         ping_result = PingResult(is_alive=True, status=PingStatus.SUCCESS)
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             # Status changed: False -> True
             mock_cursor.fetchone.return_value = {
                 "is_alive": False,
                 "snmp_available": False,
             }
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             writer.update_device_status(1, ping_result)
 
@@ -416,13 +472,18 @@ class TestDeviceStatusWriter:
             response_time_ms=15.5,  # RTT present in result
         )
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = {
                 "is_alive": False,
                 "snmp_available": False,
             }
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             writer.update_device_status(1, ping_result)
 
@@ -448,10 +509,15 @@ class TestDeviceStatusWriter:
         """Test getting device ID by IP address"""
         writer = DeviceStatusWriter()
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = {"id": 42}
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             device_id = writer.get_device_id_by_ip("192.168.1.1")
 
@@ -462,10 +528,15 @@ class TestDeviceStatusWriter:
         """Test getting device ID when IP not found"""
         writer = DeviceStatusWriter()
 
-        with patch.object(writer, "get_connection") as mock_conn:
+        with patch.object(writer, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = None
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             device_id = writer.get_device_id_by_ip("192.168.1.999")
 

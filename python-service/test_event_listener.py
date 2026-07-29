@@ -48,7 +48,7 @@ def mock_db_config():
     return DatabaseConfig(
         host="mysql",
         port=3306,
-        user="test_user",
+        username="test_user",
         password="test_pass",
         database="test_db",
     )
@@ -81,8 +81,10 @@ def test_device_event_severity_enum():
 
 @pytest.mark.asyncio
 async def test_laravel_api_client_stub():
-    """Test LaravelAPIClient.send_device_event() stub behavior"""
-    client = LaravelAPIClient(base_url="http://php:80", api_token="test_token")
+    """Test LaravelAPIClient.send_device_event() real HTTP client behavior"""
+    base_url = "http://php:80"
+    api_token = "test_internal_token"
+    client = LaravelAPIClient(base_url=base_url, api_token=api_token)
 
     event = DeviceEvent(
         device_id=1,
@@ -94,15 +96,67 @@ async def test_laravel_api_client_stub():
         raw_data="test data",
     )
 
-    # Stub should always return True and log
-    with patch("event_listener.logger") as mock_logger:
+    # Test successful HTTP 201 response
+    with patch("httpx.AsyncClient") as mock_client_class:
+        mock_client = AsyncMock()
+        mock_client_class.return_value.__aenter__.return_value = mock_client
+        
+        mock_response = Mock()
+        mock_response.status_code = 201
+        mock_client.post = AsyncMock(return_value=mock_response)
+
         result = await client.send_device_event(event)
 
+        # Verify correct return value
         assert result is True
-        mock_logger.info.assert_called_once()
-        call_args = mock_logger.info.call_args[0][0]
-        assert "[STUB]" in call_args
-        assert "device_id=1" in call_args
+
+        # Verify correct HTTP call
+        mock_client.post.assert_called_once()
+        call_args = mock_client.post.call_args
+
+        # Verify URL
+        assert call_args[0][0] == f"{base_url}/api/internal/device-events"
+
+        # Verify headers (Authorization Bearer token)
+        headers = call_args[1]["headers"]
+        assert "Authorization" in headers
+        assert headers["Authorization"] == f"Bearer {api_token}"
+
+        # Verify JSON payload matches event
+        json_payload = call_args[1]["json"]
+        assert json_payload["device_id"] == 1
+        assert json_payload["ip_address"] == "192.168.1.10"
+        assert json_payload["event_type"] == "link_down"
+        assert json_payload["severity"] == "critical"
+        assert json_payload["message"] == "Test event"
+
+    # Test failed HTTP response (non-201)
+    with patch("httpx.AsyncClient") as mock_client_class:
+        mock_client = AsyncMock()
+        mock_client_class.return_value.__aenter__.return_value = mock_client
+        
+        mock_response = Mock()
+        mock_response.status_code = 500
+        mock_response.text = "Internal Server Error"
+        mock_client.post = AsyncMock(return_value=mock_response)
+
+        with patch("event_listener.logger"):
+            result = await client.send_device_event(event)
+
+        # Verify returns False on non-201
+        assert result is False
+
+    # Test network error (exception)
+    with patch("httpx.AsyncClient") as mock_client_class:
+        mock_client = AsyncMock()
+        mock_client_class.return_value.__aenter__.return_value = mock_client
+        mock_client.post = AsyncMock(side_effect=Exception("Connection refused"))
+
+        with patch("event_listener.logger"):
+            result = await client.send_device_event(event)
+
+        # Verify returns False on exception
+        assert result is False
 
 
 # SNMPTrapReceiver Tests
@@ -647,7 +701,7 @@ def test_syslog_parse_no_priority():
     event = listener.parse_syslog(syslog_data, addr)
 
     assert event is not None
-    assert event.severity == EventSeverity.INFO  # Default for priority 0
+    assert event.severity == EventSeverity.CRITICAL  # Priority 0 = Emergency per RFC 3164
 
 
 def test_snmp_trap_parse_exception_handling():
@@ -656,7 +710,8 @@ def test_snmp_trap_parse_exception_handling():
 
     # This should not crash even with weird data
     with patch("event_listener.logger"):
-        event = receiver.parse_trap(b"", ("invalid", "addr"))
+        # Pass None as addr to trigger TypeError: 'NoneType' object is not subscriptable
+        event = receiver.parse_trap(b"", None)
 
         # Should return None on error
         assert event is None

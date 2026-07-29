@@ -76,10 +76,15 @@ class TestSubnetReader:
             },
         ]
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchall.return_value = mock_rows
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             subnets = reader.get_enabled_subnets()
 
@@ -98,10 +103,15 @@ class TestSubnetReader:
         """Test getting enabled subnets when none exist"""
         reader = SubnetReader()
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchall.return_value = []
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             subnets = reader.get_enabled_subnets()
 
@@ -116,10 +126,15 @@ class TestSubnetReader:
             {"id": 2, "subnet": "192.168.10.0/24", "name": "IT", "enabled": True},
         ]
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchall.return_value = mock_rows
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             subnets = reader.get_all_subnets(include_disabled=False)
 
@@ -136,10 +151,15 @@ class TestSubnetReader:
             {"id": 3, "subnet": "192.168.10.0/24", "name": "IT", "enabled": True},
         ]
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchall.return_value = mock_rows
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             subnets = reader.get_all_subnets(include_disabled=True)
 
@@ -163,10 +183,15 @@ class TestSubnetReader:
             "enabled": True,
         }
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = mock_row
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             subnet = reader.get_subnet_by_cidr("192.168.1.0/24")
 
@@ -182,10 +207,15 @@ class TestSubnetReader:
         """Test getting subnet that doesn't exist"""
         reader = SubnetReader()
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = None
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             subnet = reader.get_subnet_by_cidr("10.0.0.0/8")
 
@@ -195,10 +225,15 @@ class TestSubnetReader:
         """Test counting enabled subnets"""
         reader = SubnetReader()
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = {"count": 4}
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             count = reader.count_enabled_subnets()
 
@@ -213,10 +248,15 @@ class TestSubnetReader:
         """Test counting when no enabled subnets"""
         reader = SubnetReader()
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = {"count": 0}
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             count = reader.count_enabled_subnets()
 
@@ -226,10 +266,15 @@ class TestSubnetReader:
         """Test counting when query returns no result"""
         reader = SubnetReader()
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchone.return_value = None
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             count = reader.count_enabled_subnets()
 
@@ -249,10 +294,15 @@ class TestSubnetReader:
             {"id": 1, "subnet": "192.168.1.0/24", "name": "Test", "enabled": True}
         ]
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchall.return_value = mock_rows
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             reader.get_enabled_subnets()
 
@@ -276,10 +326,15 @@ class TestSubnetReader:
             {"id": 2, "subnet": "192.168.10.0/24", "name": "Test2", "enabled": 0},
         ]
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchall.return_value = mock_rows
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             subnets = reader.get_all_subnets(include_disabled=True)
 
@@ -415,10 +470,15 @@ class TestSchemaValidation:
             {"id": 1, "subnet": "192.168.1.0/24", "name": "Test", "enabled": True}
         ]
 
-        with patch.object(reader, "get_connection") as mock_conn:
+        with patch.object(reader, "get_connection") as mock_get_conn:
+            # Mock connection and cursor properly
+            mock_connection = MagicMock()
             mock_cursor = MagicMock()
             mock_cursor.fetchall.return_value = mock_rows
-            mock_conn.return_value.__enter__.return_value.cursor.return_value.__enter__.return_value = mock_cursor
+            mock_cursor.__enter__ = MagicMock(return_value=mock_cursor)
+            mock_cursor.__exit__ = MagicMock(return_value=False)
+            mock_connection.cursor.return_value = mock_cursor
+            mock_get_conn.return_value = mock_connection
 
             subnets = reader.get_enabled_subnets()
 

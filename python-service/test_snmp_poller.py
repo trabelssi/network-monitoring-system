@@ -178,7 +178,7 @@ class TestSNMPPoller:
         """Test cleaning SNMP values with Hex-STRING: prefix"""
         assert SNMPPoller._clean_snmp_value("Hex-STRING: 48656C6C6F") == "48656C6C6F"
 
-    @patch("snmp_poller.getCmd")
+    @patch("pysnmp.hlapi.getCmd")
     def test_query_device_success(self, mock_getcmd):
         """Test successful SNMP query (mocked)"""
         # Mock successful SNMP response
@@ -216,7 +216,7 @@ class TestSNMPPoller:
         assert result.sys_location == "Server Room A"
         assert result.error is None
 
-    @patch("snmp_poller.getCmd")
+    @patch("pysnmp.hlapi.getCmd")
     def test_query_device_with_error_indication(self, mock_getcmd):
         """Test SNMP query with error indication (mocked)"""
         mock_getcmd.return_value = iter(
@@ -236,7 +236,7 @@ class TestSNMPPoller:
         assert result.available is False
         assert "Request timeout" in result.error
 
-    @patch("snmp_poller.getCmd")
+    @patch("pysnmp.hlapi.getCmd")
     def test_query_device_with_error_status(self, mock_getcmd):
         """Test SNMP query with error status (mocked)"""
         mock_error_status = Mock()

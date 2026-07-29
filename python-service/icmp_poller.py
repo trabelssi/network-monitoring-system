@@ -330,7 +330,7 @@ class RTTAnalyzer:
         rtt_values: List[float], threshold_multiplier: float = 3.0
     ) -> List[int]:
         """
-        Detect RTT anomalies (outliers)
+        Detect RTT anomalies (outliers) using leave-one-out validation
 
         Args:
             rtt_values: List of RTT measurements
@@ -338,20 +338,29 @@ class RTTAnalyzer:
 
         Returns:
             List of indices where anomalies were detected
+
+        Note:
+            Uses leave-one-out approach: when checking if a point is an outlier,
+            compute mean/stddev excluding that point to avoid "outlier pollutes
+            its own detection" problem.
         """
         if len(rtt_values) < 3:
             return []  # Need at least 3 samples for meaningful detection
 
-        # Calculate mean and standard deviation
-        mean = sum(rtt_values) / len(rtt_values)
-        variance = sum((x - mean) ** 2 for x in rtt_values) / len(rtt_values)
-        std_dev = variance**0.5
-
-        # Detect outliers beyond threshold
-        threshold = threshold_multiplier * std_dev
         anomalies = []
 
         for i, rtt in enumerate(rtt_values):
+            # Leave-one-out: compute statistics without the point being tested
+            other_values = rtt_values[:i] + rtt_values[i + 1 :]
+
+            # Calculate mean and standard deviation of remaining points
+            mean = sum(other_values) / len(other_values)
+            variance = sum((x - mean) ** 2 for x in other_values) / len(other_values)
+            std_dev = variance**0.5
+
+            # Detect if current point is outlier based on other points' statistics
+            threshold = threshold_multiplier * std_dev
+
             if abs(rtt - mean) > threshold:
                 anomalies.append(i)
 

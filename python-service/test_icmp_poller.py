@@ -139,7 +139,7 @@ class TestICMPPoller:
         assert poller.config.timeout == 10.0
 
     @pytest.mark.asyncio
-    @patch("icmp_poller.icmplib_ping")
+    @patch("icmplib.async_ping")
     async def test_async_ping_success_with_rtt(self, mock_ping):
         """Test successful async ping with RTT capture (mocked)"""
         # Mock successful ping response
@@ -166,7 +166,7 @@ class TestICMPPoller:
         assert result.error is None
 
     @pytest.mark.asyncio
-    @patch("icmp_poller.icmplib_ping")
+    @patch("icmplib.async_ping")
     async def test_async_ping_timeout(self, mock_ping):
         """Test ping timeout (mocked)"""
         mock_host = Mock()
@@ -190,7 +190,7 @@ class TestICMPPoller:
         assert result.packet_loss == 1.0
 
     @pytest.mark.asyncio
-    @patch("icmp_poller.icmplib_ping")
+    @patch("icmplib.async_ping")
     async def test_async_ping_unreachable(self, mock_ping):
         """Test ping unreachable (partial packet loss - mocked)"""
         mock_host = Mock()
@@ -218,7 +218,7 @@ class TestICMPPoller:
         # Don't mock icmplib - let it fail naturally if not installed
         # Or mock the import to raise ImportError
         with patch(
-            "icmp_poller.async_ping",
+            "icmplib.async_ping",
             side_effect=ImportError("No module named 'icmplib'"),
         ):
             poller = ICMPPoller()
@@ -227,7 +227,7 @@ class TestICMPPoller:
             pass
 
     @pytest.mark.asyncio
-    @patch("icmp_poller.icmplib_ping")
+    @patch("icmplib.async_ping")
     async def test_async_ping_permission_error(self, mock_ping):
         """Test ping permission denied (mocked)"""
 
@@ -244,7 +244,7 @@ class TestICMPPoller:
         assert "elevated privileges" in result.error.lower()
 
     @pytest.mark.asyncio
-    @patch("icmp_poller.icmplib_ping")
+    @patch("icmplib.async_ping")
     async def test_async_ping_generic_exception(self, mock_ping):
         """Test ping with unexpected exception (mocked)"""
 
