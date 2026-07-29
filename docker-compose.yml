@@ -116,6 +116,20 @@ services:
       retries: 3
       start_period: 5s
 
+  prometheus:
+    image: prom/prometheus:v3.13.1
+    container_name: network-monitoring-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=90d'
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - network-monitoring
+
 networks:
   network-monitoring:
     driver: bridge
@@ -128,4 +142,6 @@ volumes:
   vendor-data:
     driver: local
   node-modules-data:
+    driver: local
+  prometheus-data:
     driver: local
