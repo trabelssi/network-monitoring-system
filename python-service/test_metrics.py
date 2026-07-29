@@ -133,8 +133,7 @@ class TestGaugeUpdates:
 
         metrics_output = generate_metrics().decode("utf-8")
         assert (
-            'snmp_available{device_id="5",hostname="snmp-device"} 1.0'
-            in metrics_output
+            'snmp_available{device_id="5",hostname="snmp-device"} 1.0' in metrics_output
         )
 
     def test_snmp_available_updates_false(self):
@@ -194,8 +193,14 @@ class TestGaugeUpdates:
         )
 
         metrics_output = generate_metrics().decode("utf-8")
-        assert f'device_up{{device_id="{device_id}",hostname="{hostname}"}} 1.0' in metrics_output
-        assert f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 10.0' in metrics_output
+        assert (
+            f'device_up{{device_id="{device_id}",hostname="{hostname}"}} 1.0'
+            in metrics_output
+        )
+        assert (
+            f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 10.0'
+            in metrics_output
+        )
 
         # Cycle 2: Device online, RTT 15ms
         MetricsUpdater.update_device_metrics(
@@ -206,7 +211,10 @@ class TestGaugeUpdates:
         )
 
         metrics_output = generate_metrics().decode("utf-8")
-        assert f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 15.0' in metrics_output
+        assert (
+            f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 15.0'
+            in metrics_output
+        )
 
         # Cycle 3: Device offline
         MetricsUpdater.update_device_metrics(
@@ -217,8 +225,14 @@ class TestGaugeUpdates:
         )
 
         metrics_output = generate_metrics().decode("utf-8")
-        assert f'device_up{{device_id="{device_id}",hostname="{hostname}"}} 0.0' in metrics_output
-        assert f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 0.0' in metrics_output
+        assert (
+            f'device_up{{device_id="{device_id}",hostname="{hostname}"}} 0.0'
+            in metrics_output
+        )
+        assert (
+            f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 0.0'
+            in metrics_output
+        )
 
 
 class TestCounterIncrements:
@@ -234,7 +248,10 @@ class TestCounterIncrements:
 
         metrics_output = generate_metrics().decode("utf-8")
         # Counter should increment (exact value depends on test execution order)
-        assert f'device_status_changes_total{{device_id="{device_id}",hostname="{hostname}"}}' in metrics_output
+        assert (
+            f'device_status_changes_total{{device_id="{device_id}",hostname="{hostname}"}}'
+            in metrics_output
+        )
 
     def test_counter_multiple_increments(self):
         """Verify counter increments multiple times correctly"""
@@ -247,7 +264,10 @@ class TestCounterIncrements:
 
         metrics_output = generate_metrics().decode("utf-8")
         # Counter should be >= 3 (might be higher if other tests ran first)
-        assert f'device_status_changes_total{{device_id="{device_id}",hostname="{hostname}"}}' in metrics_output
+        assert (
+            f'device_status_changes_total{{device_id="{device_id}",hostname="{hostname}"}}'
+            in metrics_output
+        )
 
     def test_counter_different_devices(self):
         """Verify counter tracks different devices independently"""
@@ -266,8 +286,14 @@ class TestCounterIncrements:
         metrics_output = generate_metrics().decode("utf-8")
 
         # Both devices should have independent counters
-        assert f'device_status_changes_total{{device_id="{device1_id}",hostname="{device1_hostname}"}}' in metrics_output
-        assert f'device_status_changes_total{{device_id="{device2_id}",hostname="{device2_hostname}"}}' in metrics_output
+        assert (
+            f'device_status_changes_total{{device_id="{device1_id}",hostname="{device1_hostname}"}}'
+            in metrics_output
+        )
+        assert (
+            f'device_status_changes_total{{device_id="{device2_id}",hostname="{device2_hostname}"}}'
+            in metrics_output
+        )
 
 
 class TestPrometheusExpositionFormat:
@@ -360,10 +386,22 @@ class TestMetricsIntegration:
         metrics_output = generate_metrics().decode("utf-8")
 
         # Verify all metrics are present and correct
-        assert f'device_up{{device_id="{device_id}",hostname="{hostname}"}} 1.0' in metrics_output
-        assert f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 12.5' in metrics_output
-        assert f'snmp_available{{device_id="{device_id}",hostname="{hostname}"}} 1.0' in metrics_output
-        assert f'device_status_changes_total{{device_id="{device_id}",hostname="{hostname}"}}' in metrics_output
+        assert (
+            f'device_up{{device_id="{device_id}",hostname="{hostname}"}} 1.0'
+            in metrics_output
+        )
+        assert (
+            f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 12.5'
+            in metrics_output
+        )
+        assert (
+            f'snmp_available{{device_id="{device_id}",hostname="{hostname}"}} 1.0'
+            in metrics_output
+        )
+        assert (
+            f'device_status_changes_total{{device_id="{device_id}",hostname="{hostname}"}}'
+            in metrics_output
+        )
 
     def test_edge_case_device_id_as_string(self):
         """Verify device_id is correctly converted to string in labels"""
@@ -400,7 +438,10 @@ class TestMetricsIntegration:
         )
 
         metrics_output = generate_metrics().decode("utf-8")
-        assert 'device_response_time_ms{device_id="19",hostname="slow-device"} 5000.0' in metrics_output
+        assert (
+            'device_response_time_ms{device_id="19",hostname="slow-device"} 5000.0'
+            in metrics_output
+        )
 
     def test_edge_case_very_low_rtt(self):
         """Verify very low RTT values are handled correctly"""
@@ -412,4 +453,7 @@ class TestMetricsIntegration:
         )
 
         metrics_output = generate_metrics().decode("utf-8")
-        assert 'device_response_time_ms{device_id="20",hostname="fast-device"} 0.1' in metrics_output
+        assert (
+            'device_response_time_ms{device_id="20",hostname="fast-device"} 0.1'
+            in metrics_output
+        )
