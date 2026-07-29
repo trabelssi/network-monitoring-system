@@ -1,0 +1,13 @@
+# Prometheus Configuration
+# Scrapes metrics from the Python network monitoring service
+
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: 'network-monitoring-service'
+    static_configs:
+      - targets: ['python-service:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
