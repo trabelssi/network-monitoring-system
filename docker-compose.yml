@@ -130,6 +130,21 @@ services:
     networks:
       - network-monitoring
 
+  grafana:
+    image: grafana/grafana-oss:11.3.0
+    container_name: network-monitoring-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin_password}
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - network-monitoring
+
 networks:
   network-monitoring:
     driver: bridge
@@ -144,4 +159,6 @@ volumes:
   node-modules-data:
     driver: local
   prometheus-data:
+    driver: local
+  grafana-data:
     driver: local
