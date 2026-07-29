@@ -54,12 +54,14 @@ jobs:
             test_icmp_poller.py \
             test_database_writer.py \
             test_subnet_reader.py \
-            test_event_listener.py
+            test_event_listener.py \
+            test_metrics.py \
+            test_main_metrics.py
 
       - name: Test summary
         if: always()
         run: |
           echo "## Test Results" >> $GITHUB_STEP_SUMMARY
           echo "- Python version: 3.12" >> $GITHUB_STEP_SUMMARY
-          echo "- Test files: 5 (Steps 2-6)" >> $GITHUB_STEP_SUMMARY
+          echo "- Test files: 7 (Steps 2-6, Phase 3 Step 1)" >> $GITHUB_STEP_SUMMARY
           echo "- All tests use mocked dependencies (no Docker/MySQL required)" >> $GITHUB_STEP_SUMMARY

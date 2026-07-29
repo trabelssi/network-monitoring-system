@@ -12,9 +12,11 @@ from typing import Dict, Any
 from datetime import datetime
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 import pymysql
 from dotenv import load_dotenv
+
+from metrics import generate_metrics
 
 # Load environment variables
 load_dotenv()
@@ -149,6 +151,25 @@ async def test_database() -> Dict[str, Any]:
             status_code=500,
             detail={"error": "Database connection failed", "message": str(e)},
         )
+
+
+@app.get("/metrics")
+async def metrics() -> Response:
+    """
+    Prometheus metrics endpoint
+
+    Returns metrics in Prometheus exposition format:
+    - device_up{device_id, hostname} - Device availability (1=up, 0=down)
+    - device_response_time_ms{device_id, hostname} - ICMP RTT in milliseconds
+    - snmp_available{device_id, hostname} - SNMP availability (1=available, 0=unavailable)
+    - device_status_changes_total{device_id, hostname} - Counter of status transitions
+
+    Phase 3, Step 1: Prometheus instrumentation
+    """
+    return Response(
+        content=generate_metrics(),
+        media_type="text/plain; version=0.0.4; charset=utf-8",
+    )
 
 
 if __name__ == "__main__":

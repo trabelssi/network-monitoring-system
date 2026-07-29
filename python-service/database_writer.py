@@ -21,6 +21,7 @@ from pymysql.cursors import DictCursor
 
 from snmp_poller import SNMPResult
 from icmp_poller import PingResult
+from metrics import MetricsUpdater
 
 
 @dataclass
@@ -196,6 +197,7 @@ class DeviceStatusWriter:
         device_id: int,
         ping_result: PingResult,
         snmp_result: Optional[SNMPResult] = None,
+        hostname: Optional[str] = None,
     ) -> bool:
         """
         Update device status and record history if status changed
@@ -204,6 +206,7 @@ class DeviceStatusWriter:
             device_id: Device ID (from device table)
             ping_result: ICMP ping result
             snmp_result: SNMP query result (optional, updates snmp_available)
+            hostname: Device hostname (optional, for Prometheus labels)
 
         Returns:
             True if status changed (history recorded), False if no change
@@ -212,13 +215,16 @@ class DeviceStatusWriter:
             CRITICAL: RTT (ping_result.response_time_ms) is NOT written to database.
             RTT stays in-memory only, to be exposed via /metrics in Phase 3.
             This is a deliberate decision - do not add RTT column without Phase 3 approval.
+
+            Phase 3 Integration: Prometheus metrics are updated in-memory during
+            the same poll cycle that writes to device_status_history (no second loop).
         """
         connection = self.get_connection()
         try:
             with connection.cursor() as cursor:
-                # Get current device status
+                # Get current device status and hostname
                 cursor.execute(
-                    "SELECT is_alive, snmp_available FROM device WHERE id = %s",
+                    "SELECT is_alive, snmp_available, hostname FROM device WHERE id = %s",
                     (device_id,),
                 )
                 current = cursor.fetchone()
@@ -228,6 +234,10 @@ class DeviceStatusWriter:
 
                 previous_is_alive = current["is_alive"]
                 current_is_alive = ping_result.is_alive
+
+                # Use hostname from DB if not provided
+                if hostname is None:
+                    hostname = current.get("hostname") or f"device_{device_id}"
 
                 # Update device table
                 # Columns from device schema (2025_08_28_072100):
@@ -268,7 +278,22 @@ class DeviceStatusWriter:
                         cursor, device_id, "online" if current_is_alive else "offline"
                     )
 
+                    # Phase 3: Increment status change counter (same cycle as DB write)
+                    MetricsUpdater.increment_status_change(device_id, hostname)
+
                 connection.commit()
+
+                # Phase 3: Update Prometheus metrics (same cycle as DB write)
+                MetricsUpdater.update_device_metrics(
+                    device_id=device_id,
+                    hostname=hostname,
+                    is_alive=current_is_alive,
+                    response_time_ms=ping_result.response_time_ms,
+                    snmp_available_status=snmp_result.available
+                    if snmp_result
+                    else None,
+                )
+
                 return status_changed
 
         finally:
