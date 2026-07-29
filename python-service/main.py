@@ -23,14 +23,14 @@ load_dotenv()
 app = FastAPI(
     title=os.getenv("SERVICE_NAME", "Network Discovery Service"),
     version=os.getenv("SERVICE_VERSION", "1.0.0"),
-    description="Network device discovery and monitoring service"
+    description="Network device discovery and monitoring service",
 )
 
 
 def get_db_connection():
     """
     Get a database connection using environment variables
-    
+
     Returns:
         pymysql.Connection: Database connection object
     """
@@ -40,8 +40,8 @@ def get_db_connection():
         user=os.getenv("DB_USERNAME", "laravel_user"),
         password=os.getenv("DB_PASSWORD", "laravel_password"),
         database=os.getenv("DB_DATABASE", "network_monitoring"),
-        charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor
+        charset="utf8mb4",
+        cursorclass=pymysql.cursors.DictCursor,
     )
 
 
@@ -49,14 +49,14 @@ def get_db_connection():
 async def root() -> Dict[str, str]:
     """
     Root endpoint - service information
-    
+
     Returns:
         Dict containing service name and version
     """
     return {
         "service": os.getenv("SERVICE_NAME", "Network Discovery Service"),
         "version": os.getenv("SERVICE_VERSION", "1.0.0"),
-        "status": "operational"
+        "status": "operational",
     }
 
 
@@ -64,11 +64,11 @@ async def root() -> Dict[str, str]:
 async def health_check() -> Dict[str, Any]:
     """
     Health check endpoint
-    
+
     Verifies:
     - Service is running
     - Database connection is working
-    
+
     Returns:
         Dict containing health status and database connectivity
     """
@@ -76,12 +76,9 @@ async def health_check() -> Dict[str, Any]:
         "service": "network-discovery-service",
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
-        "database": {
-            "connected": False,
-            "details": None
-        }
+        "database": {"connected": False, "details": None},
     }
-    
+
     # Test database connection
     try:
         connection = get_db_connection()
@@ -90,22 +87,22 @@ async def health_check() -> Dict[str, Any]:
                 # Simple connectivity test
                 cursor.execute("SELECT 1 as test")
                 result = cursor.fetchone()
-                
+
                 # Count devices in database
                 cursor.execute("SELECT COUNT(*) as device_count FROM device")
                 device_count = cursor.fetchone()
-                
+
                 health_status["database"]["connected"] = True
                 health_status["database"]["details"] = {
                     "test_query": result.get("test") == 1,
-                    "device_count": device_count.get("device_count", 0)
+                    "device_count": device_count.get("device_count", 0),
                 }
-                
+
     except Exception as e:
         health_status["status"] = "unhealthy"
         health_status["database"]["error"] = str(e)
         # Don't raise exception - health check should always return, even if unhealthy
-    
+
     return health_status
 
 
@@ -113,7 +110,7 @@ async def health_check() -> Dict[str, Any]:
 async def test_database() -> Dict[str, Any]:
     """
     Detailed database connectivity test
-    
+
     Returns:
         Dict containing detailed database information
     """
@@ -124,7 +121,7 @@ async def test_database() -> Dict[str, Any]:
                 # Test basic query
                 cursor.execute("SELECT VERSION() as version")
                 mysql_version = cursor.fetchone()
-                
+
                 # Get device table info
                 cursor.execute("""
                     SELECT 
@@ -134,7 +131,7 @@ async def test_database() -> Dict[str, Any]:
                     FROM device
                 """)
                 device_stats = cursor.fetchone()
-                
+
                 return {
                     "status": "success",
                     "mysql_version": mysql_version.get("version"),
@@ -143,29 +140,21 @@ async def test_database() -> Dict[str, Any]:
                     "device_statistics": {
                         "total": device_stats.get("total_devices", 0),
                         "alive": device_stats.get("alive_devices", 0),
-                        "snmp_available": device_stats.get("snmp_devices", 0)
-                    }
+                        "snmp_available": device_stats.get("snmp_devices", 0),
+                    },
                 }
-                
+
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail={
-                "error": "Database connection failed",
-                "message": str(e)
-            }
+            detail={"error": "Database connection failed", "message": str(e)},
         )
 
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     port = int(os.getenv("SERVICE_PORT", "8000"))
     debug = os.getenv("DEBUG", "false").lower() == "true"
-    
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=port,
-        reload=debug
-    )
+
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=debug)
