@@ -14,23 +14,24 @@ class NetworkDiscovery extends Command
 
     protected $description = 'Discover new network devices';
 
+    /**
+     * Handle the discovery command
+     * 
+     * NOTE: Discovery moved to Python service - Phase 2 (Step 1-8)
+     * SancellaDiscoveryService retired 2026-07-29
+     * This command is available but no-op until Python replacement is deployed
+     */
     public function handle(SancellaDiscoveryService $discovery)
     {
-        if ($this->option('all')) {
-            return $this->discoverAllSubnets($discovery);
-        }
-
-        if ($subnet = $this->option('subnet')) {
-            return $this->discoverSubnet($discovery, $subnet);
-        }
-
-        if ($range = $this->option('range')) {
-            list($start, $end) = explode('-', $range);
-            return $this->discoverRange($discovery, $start, $end);
-        }
-
-        $this->error('Please specify --subnet, --range, or --all');
-        return 1;
+        // Discovery functionality moved to Python service
+        // See: phase2-python-service branch, MIGRATION_LOG.md Entry 16
+        // Command remains available but dormant until Python service replacement
+        
+        $this->warn('Network discovery has been moved to the Python service (Phase 2).');
+        $this->info('This command is currently dormant and will be re-enabled once the Python service is deployed.');
+        $this->info('See MIGRATION_LOG.md Entry 16 for details.');
+        
+        return 0;
     }
 
     private function discoverAllSubnets(SancellaDiscoveryService $discovery)

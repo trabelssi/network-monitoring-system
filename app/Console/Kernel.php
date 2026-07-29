@@ -78,31 +78,31 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Legacy academic discovery
-        $schedule->call(function () {
-            \App::make(\App\Http\Controllers\DiscoveryController::class)->scanExistingDevices();
-        })->everyFiveMinutes();
-
-        // WAP Monitoring - Ping all monitored WAPs every 5 minutes
-        $schedule->call(function () {
-            $monitoringService = \App::make(\App\Services\WapMonitoringService::class);
-            $monitoringService->pingAllMonitoredWaps();
-        })->everyFiveMinutes()->name('wap-monitoring');
+        // Legacy academic discovery - REMOVED 2026-07-29
+        // DiscoveryController class does not exist, was causing errors every 5 minutes
+        // Discovery moved to Python service (Phase 2) - see MIGRATION_LOG.md Entry 16
+        
+        // WAP Monitoring - DEFERRED DECISION 2026-07-29
+        // WapMonitoringService class does not exist, was causing errors every 5 minutes
+        // Deferred: implement dedicated WAP monitoring OR fold into unified device monitoring
+        // See MIGRATION_LOG.md Entry 16 for decision context
 
         // Network Discovery - Run every night at 1 AM
+        // NOTE: Command is currently no-op (discovery moved to Python service)
         $schedule->command('network:discover --all')
             ->dailyAt('01:00')
             ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/discovery.log'));
             
-        // Sancella Production Jobs
-        // Full network discovery every 4 hours
+        // Sancella Production Jobs - NOTE: Currently no-op (moved to Python service)
+        
+        // Full network discovery every 4 hours (no-op until Python service deployed)
         $schedule->job(new \App\Jobs\DiscoverNetworkDevices)
             ->everyFourHours()
             ->withoutOverlapping()
             ->name('sancella-discovery');
         
-        // Monitor existing devices every 2 minutes
+        // Monitor existing devices every 2 minutes (no-op until Python service deployed)
         $schedule->job(new \App\Jobs\MonitorDeviceStatus)
             ->everyTwoMinutes()
             ->withoutOverlapping()

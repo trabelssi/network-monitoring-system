@@ -20,21 +20,17 @@ class DiscoverNetworkDevices implements ShouldQueue
 
     /**
      * Execute the job.
+     * 
+     * NOTE: Discovery moved to Python service - Phase 2 (Step 1-8)
+     * SancellaDiscoveryService retired 2026-07-29
+     * This job is scheduled but no-op until Python replacement is deployed
      */
     public function handle(): void
     {
-        $discoveryService = new SancellaDiscoveryService();
+        // Discovery functionality moved to Python service
+        // See: phase2-python-service branch, MIGRATION_LOG.md Entry 16
+        // This job remains scheduled but dormant until Python service replacement
         
-        // Discover all configured subnets
-        $subnets = [
-            '192.168.1.0/24',  // Office network
-            '192.168.10.0/24', // IT Department
-            '192.168.20.0/24', // Bureau Principal
-            '192.168.30.0/24', // Production
-        ];
-        
-        foreach ($subnets as $subnet) {
-            $discoveryService->discoverSubnet($subnet);
-        }
+        \Illuminate\Support\Facades\Log::info('DiscoverNetworkDevices: No-op - awaiting Python service replacement');
     }
 }

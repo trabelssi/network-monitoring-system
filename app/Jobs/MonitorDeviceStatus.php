@@ -22,20 +22,19 @@ class MonitorDeviceStatus implements ShouldQueue
 
     /**
      * Execute the job.
+     * 
+     * NOTE: Monitoring moved to Python service - Phase 2 (Step 1-8)
+     * SancellaDiscoveryService retired 2026-07-29
+     * This job is scheduled but no-op until Python replacement is deployed
      */
     public function handle(): void
     {
-        $discoveryService = new SancellaDiscoveryService();
+        // Device monitoring functionality moved to Python service
+        // See: phase2-python-service branch, MIGRATION_LOG.md Entry 16
+        // This job remains scheduled but dormant until Python service replacement
         
-        // Monitor all known devices
-        Device::chunk(50, function ($devices) use ($discoveryService) {
-            foreach ($devices as $device) {
-                $this->monitorDevice($device, $discoveryService);
-            }
-        });
-
-        Log::info('Device status monitoring completed', [
-            'monitored_devices' => Device::count()
+        Log::info('MonitorDeviceStatus: No-op - awaiting Python service replacement', [
+            'total_devices' => Device::count()
         ]);
     }
 
@@ -46,14 +45,14 @@ class MonitorDeviceStatus implements ShouldQueue
     {
         try {
             // Store previous status before discovery
-            $previousStatus = $device->icmp_status;
+            $previousStatus = $device->is_alive;
             
             // Discover/update device status
             $discoveryService->discoverDevice($device->ip_address);
             
             // Refresh device to get updated status
             $device->refresh();
-            $currentStatus = $device->icmp_status;
+            $currentStatus = $device->is_alive;
             
             // Log status changes (alerts removed)
             if ($previousStatus !== $currentStatus) {
