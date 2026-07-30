@@ -131,6 +131,21 @@ services:
     networks:
       - network-monitoring
 
+  alertmanager:
+    image: prom/alertmanager:v0.32.1
+    container_name: network-monitoring-alertmanager
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./docker/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-data:/alertmanager
+    networks:
+      - network-monitoring
+
   grafana:
     image: grafana/grafana-oss:11.3.0
     container_name: network-monitoring-grafana
@@ -161,6 +176,8 @@ volumes:
   node-modules-data:
     driver: local
   prometheus-data:
+    driver: local
+  alertmanager-data:
     driver: local
   grafana-data:
     driver: local
