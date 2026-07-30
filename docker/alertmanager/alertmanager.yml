@@ -1,0 +1,47 @@
+# Alertmanager configuration for network monitoring system
+# Receives alerts from Prometheus and forwards them to Laravel API endpoint
+
+global:
+  # How long to wait before declaring an alert resolved if it stops firing
+  resolve_timeout: 5m
+
+# Default route - all alerts flow through this
+route:
+  # Default receiver for all alerts
+  receiver: 'laravel-webhook'
+  
+  # Group alerts by these labels
+  # Alerts with the same alertname and device_id will be grouped together
+  # Using device_id (not 'device' or 'hostname') because that's the actual
+  # label name present on alerts (verified from alerts.yml annotations)
+  group_by: ['alertname', 'device_id']
+  
+  # How long to wait before sending the first notification for a new group
+  # Allows time for more alerts to arrive and be grouped together
+  group_wait: 30s
+  
+  # How long to wait before sending updated notifications for a group
+  # after the first notification has been sent
+  group_interval: 5m
+  
+  # How long to wait before re-sending a notification for alerts that
+  # are still firing (if no new alerts or resolutions have occurred)
+  repeat_interval: 4h
+
+# Receivers define where notifications are sent
+receivers:
+  - name: 'laravel-webhook'
+    webhook_configs:
+      - url: 'http://nginx/api/internal/device-events'
+        send_resolved: true
+        http_config:
+          follow_redirects: true
+          # Authentication required by Laravel's internal.api middleware
+          # This endpoint expects a Bearer token matching INTERNAL_API_TOKEN from .env
+          # IMPORTANT: Replace CHANGE_ME_MATCH_INTERNAL_API_TOKEN with the actual
+          # token value from your .env file before starting Alertmanager.
+          # Alertmanager does not support environment variable interpolation,
+          # so this must be manually updated as a deployment step.
+          authorization:
+            type: Bearer
+            credentials: CHANGE_ME_MATCH_INTERNAL_API_TOKEN
