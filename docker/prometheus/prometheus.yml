@@ -5,6 +5,10 @@ global:
   scrape_interval: 30s
   evaluation_interval: 30s
 
+# Alert rules file - evaluated every 30s (evaluation_interval)
+rule_files:
+  - /etc/prometheus/alerts.yml
+
 scrape_configs:
   - job_name: 'network-monitoring-service'
     static_configs:
