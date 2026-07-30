@@ -1,0 +1,32 @@
+groups:
+- name: network_monitoring
+  # Interval matches prometheus.yml scrape_interval (line 5: 30s)
+  # Ensures alert evaluation cadence aligns with metric collection
+  interval: 30s
+  rules:
+  # Alert when device has been down for 5 minutes
+  # NOTE: Using device_up (custom per-device gauge from Phase 3 Step 1),
+  # not Prometheus's built-in 'up' metric (which only tracks scrape target health).
+  # The phase doc's "up == 0" was shorthand; 'up' would only fire if the entire
+  # Python service container goes down, not individual devices within it.
+  - alert: DeviceDown
+    expr: device_up == 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Device {{ $labels.hostname }} is down"
+      description: "Device {{ $labels.hostname }} (ID: {{ $labels.device_id }}) has been unreachable for more than 5 minutes."
+
+  # Alert when device response time exceeds threshold for 5 minutes
+  # Threshold: 200ms (matches dashboard's red threshold for consistency)
+  # Rationale: Dashboard shows <100ms=green, 100-200ms=yellow, >200ms=red
+  # Using 200ms threshold means alerts fire when response time enters "red" zone
+  - alert: HighResponseTime
+    expr: device_response_time_ms > 200
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High response time on {{ $labels.hostname }}"
+      description: "Device {{ $labels.hostname }} (ID: {{ $labels.device_id }}) has response time above 200ms for more than 5 minutes (current value: {{ $value }}ms)."
