@@ -14,11 +14,6 @@ from metrics import MetricsUpdater
 class TestMetricsEndpoint:
     """Test /metrics endpoint via FastAPI TestClient"""
 
-    @pytest.fixture
-    def client(self):
-        """Create FastAPI test client"""
-        return TestClient(app)
-
     def test_metrics_endpoint_exists(self, client):
         """Verify /metrics endpoint is accessible"""
         response = client.get("/metrics")
@@ -117,3 +112,26 @@ class TestMetricsEndpoint:
         data = response.json()
         assert "service" in data
         assert "status" in data
+
+    def test_metrics_endpoint_after_device_down_update(self, client):
+        """Verify /metrics reflects device down state (up=0, rtt=0)"""
+        device_id = 102
+        hostname = "http-down-test"
+
+        # Update: device down
+        MetricsUpdater.update_device_metrics(
+            device_id=device_id,
+            hostname=hostname,
+            is_alive=False,
+            response_time_ms=None,
+        )
+
+        # Fetch /metrics
+        response = client.get("/metrics")
+        assert response.status_code == 200
+
+        body = response.text
+
+        # Verify down state reflected
+        assert f'device_up{{device_id="{device_id}",hostname="{hostname}"}} 0.0' in body
+        assert f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 0.0' in body

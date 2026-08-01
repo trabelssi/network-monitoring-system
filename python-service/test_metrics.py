@@ -179,6 +179,34 @@ class TestGaugeUpdates:
             in metrics_output
         )
 
+    def test_snmp_preserves_false_when_none_passed(self):
+        """Verify snmp_available_status=None preserves previous False value"""
+        device_id = 22
+        hostname = "snmp-preserve-false"
+
+        # First update: SNMP unavailable
+        MetricsUpdater.update_device_metrics(
+            device_id=device_id,
+            hostname=hostname,
+            is_alive=True,
+            response_time_ms=10.0,
+            snmp_available_status=False,
+        )
+        metrics_output = generate_metrics().decode("utf-8")
+        assert f'snmp_available{{device_id="{device_id}",hostname="{hostname}"}} 0.0' in metrics_output
+
+        # Second update: snmp_available_status=None
+        MetricsUpdater.update_device_metrics(
+            device_id=device_id,
+            hostname=hostname,
+            is_alive=True,
+            response_time_ms=12.0,
+            snmp_available_status=None,
+        )
+        metrics_output = generate_metrics().decode("utf-8")
+        # Should STILL be 0.0 (not changed to 1.0 or NaN)
+        assert f'snmp_available{{device_id="{device_id}",hostname="{hostname}"}} 0.0' in metrics_output
+
     def test_multiple_poll_cycles_update_same_device(self):
         """Verify metrics update across multiple poll cycles for same device"""
         device_id = 8
@@ -233,6 +261,20 @@ class TestGaugeUpdates:
             f'device_response_time_ms{{device_id="{device_id}",hostname="{hostname}"}} 0.0'
             in metrics_output
         )
+
+    def test_zero_rtt_is_valid(self):
+        """Verify RTT=0.0 is valid (not same as device down)"""
+        MetricsUpdater.update_device_metrics(
+            device_id=21,
+            hostname="zero-rtt-device",
+            is_alive=True,
+            response_time_ms=0.0,  # Theoretically possible on localhost
+        )
+
+        metrics_output = generate_metrics().decode("utf-8")
+        assert 'device_response_time_ms{device_id="21",hostname="zero-rtt-device"} 0.0' in metrics_output
+        # Device should still be up
+        assert 'device_up{device_id="21",hostname="zero-rtt-device"} 1.0' in metrics_output
 
 
 class TestCounterIncrements:
@@ -294,6 +336,21 @@ class TestCounterIncrements:
             f'device_status_changes_total{{device_id="{device2_id}",hostname="{device2_hostname}"}}'
             in metrics_output
         )
+
+    def test_counter_same_device_id_different_hostname(self):
+        """Verify same device_id with different hostname creates separate counters"""
+        device_id = 23
+        hostname1 = "counter-host-a"
+        hostname2 = "counter-host-b"
+
+        MetricsUpdater.increment_status_change(device_id, hostname1)
+        MetricsUpdater.increment_status_change(device_id, hostname2)
+
+        metrics_output = generate_metrics().decode("utf-8")
+
+        # Same device_id, different hostname → separate counters
+        assert f'device_status_changes_total{{device_id="{device_id}",hostname="{hostname1}"}}' in metrics_output
+        assert f'device_status_changes_total{{device_id="{device_id}",hostname="{hostname2}"}}' in metrics_output
 
 
 class TestPrometheusExpositionFormat:
