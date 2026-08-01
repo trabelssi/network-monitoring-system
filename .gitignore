@@ -163,3 +163,6 @@ python-service/.pytest_cache/
 
 # Documentation (internal reference only)
 docs/
+
+# Alertmanager config with real credentials (use .example as template)
+docker/alertmanager/alertmanager.yml

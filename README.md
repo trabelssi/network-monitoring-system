@@ -160,7 +160,12 @@ cp .env.example .env
 
 # Generate application key
 php artisan key:generate
+
+# Copy Alertmanager configuration
+cp docker/alertmanager/alertmanager.yml.example docker/alertmanager/alertmanager.yml
 ```
+
+**Important:** Edit `docker/alertmanager/alertmanager.yml` and replace `CHANGE_ME_MATCH_INTERNAL_API_TOKEN` with the actual value of `INTERNAL_API_TOKEN` from your `.env` file. Alertmanager does not support environment variable interpolation, so this must be manually updated before starting the Docker stack.
 
 ### 5. Configure Database
 Edit `.env` file with your database credentials:
