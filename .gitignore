@@ -163,6 +163,7 @@ python-service/.pytest_cache/
 
 # Documentation (internal reference only)
 docs/
+MIGRATION_LOG.md
 
 # Alertmanager config with real credentials (use .example as template)
 docker/alertmanager/alertmanager.yml
