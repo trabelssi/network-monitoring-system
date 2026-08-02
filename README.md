@@ -647,7 +647,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Amine Trabelsi**
 
 [![GitHub](https://img.shields.io/badge/GitHub-@trabelssi-181717?style=flat-square&logo=github)](https://github.com/trabelssi)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/trabelssiamine)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/trabelsi-mohamed-amine)
+[![Email](https://img.shields.io/badge/Email-aminetrabls021%40gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:aminetrabls021@gmail.com)
+[![Portfolio](https://img.shields.io/badge/Portfolio-trabelssi.github.io-00C7B7?style=flat-square&logo=github&logoColor=white)](https://trabelssi.github.io/)
 
 **Role**: Software Developer  
 **Company**: Sancella Tunisia
