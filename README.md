@@ -1,391 +1,650 @@
 # Network Monitoring System
 
-A comprehensive enterprise-grade network monitoring and IT service management system built with Laravel and React. This platform provides real-time network device discovery, monitoring, and complete IT ticket management capabilities.
+<div align="center">
 
-> **Internship Project** - Developed during an internship at **Sancella Tunisia**
+![Network Monitoring](app%20images/Welcome.png)
 
-### Welcome Page
-![Welcome](app%20images/Welcome.png)
-*Professional landing page*
+**Enterprise-grade network monitoring and IT service management platform**
 
-## 🏢 About the Project
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Docker](https://img.shields.io/badge/Docker-24.x-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
+[![Prometheus](https://img.shields.io/badge/Prometheus-3.13-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)](https://prometheus.io)
 
-This project was developed as part of an internship program at **Sancella Tunisia** (SO.TU.PA), a leading company in the hygiene and personal care products industry in Tunisia. The system was designed to streamline IT operations, improve network infrastructure monitoring, and enhance the overall IT service management processes within the organization.
+</div>
 
-### Company Information
-- **Company**: Sancella Tunisia (SO.TU.PA)
-- **Industry**: Manufacturing - Hygiene & Personal Care Products
-- **Location**: 52, Rue 8601, ZI Charguia 1, Tunis, Tunisia
-- **Website**: [www.sancella.com.tn](https://www.sancella.com.tn)
-- **Products**: Libero, Peaudouce, Nana, Lotus, Tena, Tork
+---
 
-## 🌟 Features
+## 🌟 Overview
 
-### 📡 Network Monitoring & Discovery
-- **Automated Device Discovery**: SNMP-based network device discovery with automatic registration
-- **Real-time Status Monitoring**: Live monitoring of network device status and availability
-- **Device Management**: Comprehensive device information including IP, MAC, vendor, and product details
-- **Network Visualization**: Interactive 3D network topology visualization
-- **Status History**: Complete historical tracking of device status changes
+A comprehensive network monitoring and IT service management system that provides real-time device discovery, intelligent alerting, and complete ticket management capabilities. Built with a modern microservices architecture combining Laravel's robust backend with Python's high-performance network monitoring capabilities.
 
-### 🎫 IT Service Management
-- **Task Management**: Create, assign, and track IT tasks with priority levels
-- **Intervention System**: Full intervention lifecycle management with approval workflows
-- **Project Tracking**: Organize tasks and interventions within projects
-- **Observer System**: Add observers to tasks and interventions for team collaboration
-- **Rating System**: Rate completed interventions for quality tracking
+<div align="center">
 
-### 👥 User & Department Management
-- **Multi-level Authentication**: Role-based access control (Admin, User)
-- **Department Organization**: Organize users and resources by departments
-- **User Activity Tracking**: Comprehensive activity logs for all user actions
-- **User Statistics**: Real-time statistics on active/inactive users
+### 🏢 Production Deployment at Sancella Tunisia
 
-### 🔔 Notification System
-- **Real-time Notifications**: Instant in-app notifications for all activities
-- **Email Notifications**: Automated email alerts for task assignments and updates
-- **Observer Notifications**: Keep observers informed of all changes
-- **Custom Notification Channels**: Extensible notification system
+**Industry**: Manufacturing - Hygiene & Personal Care Products  
+**Location**: Charguia 1, Tunis, Tunisia  
+**Products**: Libero, Peaudouce, Nana, Lotus, Tena, Tork
 
-### 📊 Advanced Dashboard
-- **Executive Dashboard**: High-level overview with key metrics and charts
-- **Network Dashboard**: Dedicated network monitoring dashboard
-- **Interactive Charts**: Beautiful data visualizations using Chart.js
-- **Real-time Updates**: Live data updates without page refresh
+</div>
 
-## 📸 Screenshots
+---
 
+## ✨ Key Features
 
+### 🔍 Intelligent Network Monitoring
 
-### Welcome & Authentication
-![Authentication](app%20images/login-singup-passwordforget.png)
-*Secure login, registration, and password recovery*
+<table>
+<tr>
+<td width="50%">
 
-### Main Dashboard
-![Main Dashboard](app%20images/main-dashboard.png)
-*Comprehensive overview with statistics and recent activities*
+**Automated Discovery**
+- SNMP-based device scanning
+- Automatic device classification
+- Network topology mapping
+- Real-time device registration
 
-### Network Monitoring Dashboard
+</td>
+<td width="50%">
+
+**Continuous Monitoring**
+- 30-second polling intervals
+- ICMP ping + SNMP health checks
+- Historical status tracking
+- Response time metrics
+
+</td>
+</tr>
+</table>
+
 ![Network Dashboard](app%20images/network-dashboard.png)
-*Real-time network monitoring with device status overview*
 
-### Device Discovery
+### 🚨 Smart Alerting System
+
+- **Prometheus-powered metrics** - Industry-standard monitoring
+- **Alertmanager integration** - Intelligent alert routing
+- **Multi-channel notifications** - Email, in-app, and webhook support
+- **Alert deduplication** - Prevent notification fatigue
+- **Escalation policies** - Automatic task creation on device failures
+
+### 🎫 Complete IT Service Management
+
+<table>
+<tr>
+<td width="33%">
+
+**Task Management**
+- Priority-based workflows
+- Assignment tracking
+- Observer notifications
+- Project organization
+
+</td>
+<td width="33%">
+
+**Intervention System**
+- Approval workflows
+- Quality ratings
+- Status tracking
+- Team collaboration
+
+</td>
+<td width="33%">
+
+**Department Structure**
+- Organizational hierarchy
+- Resource allocation
+- User management
+- Access control
+
+</td>
+</tr>
+</table>
+
+![Task Management](app%20images/ticket-show.png)
+
+### 📊 Advanced Analytics
+
+- **Grafana dashboards** - Professional visualization
+- **Custom metrics** - Device availability, response times, status changes
+- **Historical analysis** - 90-day data retention
+- **Real-time charts** - Live metric updates
+
+---
+
+## 🖼️ Application Gallery
+
+<details>
+<summary><b>👤 Authentication & Security</b></summary>
+
+![Authentication](app%20images/login-singup-passwordforget.png)
+
+Multi-factor authentication, password recovery, and secure session management.
+
+</details>
+
+<details>
+<summary><b>📈 Executive Dashboard</b></summary>
+
+![Main Dashboard](app%20images/main-dashboard.png)
+
+Comprehensive overview with key metrics, recent activities, and system health indicators.
+
+</details>
+
+<details>
+<summary><b>🔍 Device Discovery</b></summary>
+
 ![Device Discovery](app%20images/device-discovery.png)
-*SNMP-based automatic device discovery interface*
 
-### Device Details
+Automated SNMP-based network scanning with intelligent device classification.
+
+</details>
+
+<details>
+<summary><b>💻 Device Management</b></summary>
+
 ![Device Details](app%20images/device-show.png)
-*Detailed device information and status history*
 
-### Machine Management
+Detailed device information including SNMP data, status history, and network topology position.
+
+</details>
+
+<details>
+<summary><b>🏭 Equipment Management</b></summary>
+
 ![Machine Management](app%20images/machine-show.png)
-*Complete hardware and equipment management*
 
-### Task Management
-![Task Details](app%20images/ticket-show.png)
-*Comprehensive task tracking with assignments and priorities*
+Complete hardware inventory with maintenance tracking and assignment management.
 
-### Intervention Management
+</details>
+
+<details>
+<summary><b>📋 Intervention Workflows</b></summary>
+
 ![Intervention Details](app%20images/intervention-show.png)
-*Full intervention workflow with approval system*
 
-### Department Management
+Full intervention lifecycle with approval systems, status tracking, and quality ratings.
+
+</details>
+
+<details>
+<summary><b>🏢 Department Organization</b></summary>
+
 ![Departments](app%20images/departments-index.png)
-*Department organization and user assignment*
 
-### Real-time Notifications
+Hierarchical organization structure with user and resource management.
+
+</details>
+
+<details>
+<summary><b>🔔 Real-time Notifications</b></summary>
+
 ![Notifications](app%20images/notifications.png)
-*Instant notifications for all system activities*
 
+Instant notifications for tasks, interventions, device alerts, and system events.
 
+</details>
 
-## 🛠️ Technology Stack
+---
 
-### Backend
-- **Framework**: Laravel 11.x
-- **Language**: PHP 8.2+
-- **Database**: MySQL/PostgreSQL
-- **Queue System**: Laravel Queue with Redis/Database driver
-- **Authentication**: Laravel Sanctum
-- **API**: RESTful API with Inertia.js integration
+## 🏗️ Technology Stack
+
+### Backend Services
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+#### Laravel Application
+![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=flat-square&logo=laravel&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?style=flat-square&logo=mysql&logoColor=white)
+
+- RESTful API with Inertia.js
+- Laravel Sanctum authentication
+- Queue system with Redis
+- Multi-channel notifications
+- Observer pattern for events
+
+</td>
+<td width="50%" valign="top">
+
+#### Python Monitoring Service
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi&logoColor=white)
+
+- Async ICMP ping (icmplib)
+- SNMP polling (pysnmp)
+- Prometheus metrics exporter
+- 30-second polling loops
+- Database write operations
+
+</td>
+</tr>
+</table>
+
+### Monitoring & Observability
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+![Prometheus](https://img.shields.io/badge/Prometheus-3.13-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
+
+Time-series metrics database  
+90-day retention  
+Custom alert rules
+
+</td>
+<td width="33%" align="center">
+
+![Alertmanager](https://img.shields.io/badge/Alertmanager-0.32-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
+
+Alert routing engine  
+Webhook integration  
+Deduplication
+
+</td>
+<td width="33%" align="center">
+
+![Grafana](https://img.shields.io/badge/Grafana-11.x-F46800?style=for-the-badge&logo=grafana&logoColor=white)
+
+Visualization platform  
+Custom dashboards  
+Real-time updates
+
+</td>
+</tr>
+</table>
 
 ### Frontend
-- **Framework**: React 18.x
-- **UI Library**: Inertia.js for SPA experience
-- **Styling**: Tailwind CSS 3.x
-- **Icons**: Heroicons & Lucide React
-- **Charts**: Chart.js with date-fns adapter
-- **3D Visualization**: Three.js with React Three Fiber
-- **Animations**: Framer Motion
-- **Build Tool**: Vite
 
-### Additional Technologies
-- **SNMP**: PHP SNMP extension for network device discovery
-- **Real-time**: Laravel Echo for live updates
-- **Email**: Laravel Mail with queued jobs
-- **Notifications**: Multi-channel notification system
+<table>
+<tr>
+<td width="50%">
 
-## 📋 Prerequisites
+![React](https://img.shields.io/badge/React-18.x-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?style=flat-square&logo=vite&logoColor=white)
 
-- PHP 8.2 or higher
-- Composer
-- Node.js 18.x or higher
-- npm or yarn
-- MySQL 8.0+ or PostgreSQL 13+
-- Redis (optional, for queue and cache)
-- PHP SNMP extension
+</td>
+<td width="50%">
 
-## 🚀 Installation
+- Inertia.js for SPA experience
+- Chart.js for data visualization
+- Three.js for 3D topology
+- Framer Motion animations
+- Heroicons & Lucide icons
 
-### 1. Clone the Repository
+</td>
+</tr>
+</table>
+
+### Infrastructure
+
+<table>
+<tr>
+<td width="25%" align="center">
+
+![Docker](https://img.shields.io/badge/Docker-24.x-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+Multi-container  
+orchestration
+
+</td>
+<td width="25%" align="center">
+
+![Nginx](https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=white)
+
+Reverse proxy  
+Load balancing
+
+</td>
+<td width="25%" align="center">
+
+![Redis](https://img.shields.io/badge/Redis-7.x-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+
+Cache, queue  
+sessions
+
+</td>
+<td width="25%" align="center">
+
+![Supervisor](https://img.shields.io/badge/Supervisor-4.x-97CA00?style=for-the-badge)
+
+Process  
+management
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Docker & Docker Compose 24.x+
+- Git
+- 4GB RAM minimum (8GB recommended)
+
+### Installation
+
 ```bash
+# Clone repository
 git clone https://github.com/trabelssi/network-monitoring-system.git
 cd network-monitoring-system
-```
 
-### 2. Install PHP Dependencies
-```bash
-composer install
-```
-
-### 3. Install Node Dependencies
-```bash
-npm install
-```
-
-### 4. Environment Configuration
-```bash
-# Copy the example environment file
+# Configure environment
 cp .env.example .env
+cp docker/alertmanager/alertmanager.yml.example docker/alertmanager/alertmanager.yml
 
 # Generate application key
-php artisan key:generate
+docker compose exec php php artisan key:generate
 
-# Copy Alertmanager configuration
-cp docker/alertmanager/alertmanager.yml.example docker/alertmanager/alertmanager.yml
+# IMPORTANT: Edit docker/alertmanager/alertmanager.yml
+# Replace CHANGE_ME_MATCH_INTERNAL_API_TOKEN with your INTERNAL_API_TOKEN from .env
+
+# Start Docker stack
+docker compose up -d
+
+# Run migrations
+docker compose exec php php artisan migrate
+
+# (Optional) Seed database with demo data
+docker compose exec php php artisan db:seed
 ```
 
-**Important:** Edit `docker/alertmanager/alertmanager.yml` and replace `CHANGE_ME_MATCH_INTERNAL_API_TOKEN` with the actual value of `INTERNAL_API_TOKEN` from your `.env` file. Alertmanager does not support environment variable interpolation, so this must be manually updated before starting the Docker stack.
+### Access the Application
 
-### 5. Configure Database
-Edit `.env` file with your database credentials:
+- **Application**: http://localhost
+- **Grafana**: http://localhost:3000 (admin/admin_password)
+- **API Documentation**: http://localhost:8000/api/documentation
+
+**Default Credentials**:
+- Email: `admin@example.com`
+- Password: `password`
+
+⚠️ **Change default credentials immediately after first login**
+
+---
+
+## 📊 Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Nginx (Port 80)                           │
+│                     Reverse Proxy & SSL                          │
+└────────────────┬────────────────────────────────────────────────┘
+                 │
+        ┌────────┴────────┐
+        │                 │
+┌───────▼────────┐  ┌────▼──────────┐
+│ Laravel/PHP    │  │ Python        │
+│ ├─ Inertia.js  │  │ FastAPI       │
+│ ├─ Sanctum     │  │ ├─ ICMP Poll  │
+│ ├─ Queue Work  │  │ ├─ SNMP Poll  │
+│ └─ Scheduler   │  │ └─ Metrics    │
+└───────┬────────┘  └────┬──────────┘
+        │                │
+        │                │
+┌───────▼────────────────▼──────────┐
+│         MySQL 8.0                  │
+│      (Persistent Storage)          │
+└────────────────────────────────────┘
+        │
+        │
+┌───────▼────────┐  ┌────────────────┐
+│ Redis 7.x      │  │ Prometheus     │
+│ ├─ Cache       │  │ ├─ Metrics DB  │
+│ ├─ Queue       │  │ ├─ Alert Rules │
+│ └─ Sessions    │  │ └─ 90d Retain  │
+└────────────────┘  └────┬───────────┘
+                         │
+                    ┌────▼───────────┐
+                    │ Alertmanager   │
+                    │ ├─ Routing     │
+                    │ ├─ Webhooks    │
+                    │ └─ Dedupe      │
+                    └────┬───────────┘
+                         │
+                    ┌────▼───────────┐
+                    │ Grafana        │
+                    │ Visualization  │
+                    └────────────────┘
+```
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+
 ```env
+# Application
+APP_NAME="Network Monitoring"
+APP_ENV=production
+APP_DEBUG=false
+
+# Database
 DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
+DB_HOST=mysql
 DB_PORT=3306
 DB_DATABASE=network_monitoring
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-```
+DB_USERNAME=laravel_user
+DB_PASSWORD=your_secure_password
 
-### 6. Configure SNMP (Optional)
-Edit `.env` file with SNMP settings:
-```env
+# Redis
+REDIS_HOST=redis
+CACHE_STORE=redis
+QUEUE_CONNECTION=redis
+SESSION_DRIVER=redis
+
+# SNMP Configuration
 SNMP_ENABLED=true
 SNMP_VERSION=2
 SNMP_COMMUNITY=public
 SNMP_TIMEOUT=3000000
 SNMP_RETRIES=3
-```
 
-### 7. Configure Mail
-Edit `.env` file with mail settings:
-```env
+# Python Service
+POLL_INTERVAL=30
+
+# Internal API (for Alertmanager webhook)
+INTERNAL_API_TOKEN=your_generated_token_here
+
+# Mail Configuration
 MAIL_MAILER=smtp
-MAIL_HOST=your_smtp_host
+MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
-MAIL_USERNAME=your_email
-MAIL_PASSWORD=your_password
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_app_password
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=noreply@yourdomain.com
-MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-### 8. Run Database Migrations
-```bash
-php artisan migrate
+### SNMP Community Strings
+
+Edit `config/snmp.php` to add community strings for your network devices:
+
+```php
+'communities' => [
+    'public',
+    'private',
+    'your_custom_community',
+],
 ```
 
-### 9. Seed Database (Optional)
-```bash
-php artisan db:seed
+### Alert Rules
+
+Customize alert thresholds in `docker/prometheus/alerts.yml`:
+
+```yaml
+groups:
+  - name: device_alerts
+    rules:
+      - alert: DeviceDown
+        expr: device_up == 0
+        for: 5m  # Alert after 5 minutes down
+        labels:
+          severity: critical
+        annotations:
+          summary: "Device {{ $labels.hostname }} is down"
 ```
 
-### 10. Create Storage Link
-```bash
-php artisan storage:link
-```
+---
 
-### 11. Build Frontend Assets
-```bash
-# For development
-npm run dev
-
-# For production
-npm run build
-```
-
-### 12. Start the Application
-```bash
-# Development server
-php artisan serve
-
-# Queue worker (in separate terminal)
-php artisan queue:work
-
-# Schedule (for monitoring tasks)
-php artisan schedule:work
-```
-
-Visit `http://localhost:8000` in your browser.
-
-## 📖 Usage
-
-### Default Admin Credentials
-After seeding the database, you can login with:
-- **Email**: admin@example.com
-- **Password**: password
-
-⚠️ **Important**: Change these credentials immediately after first login!
+## 📖 Usage Guide
 
 ### Network Discovery
-1. Navigate to **Network > Device Discovery**
-2. Enter the IP range to scan (e.g., 192.168.1.0/24)
-3. Click **Start Discovery**
-4. Monitor the discovery progress in real-time
-5. View discovered devices in **Network > Devices**
 
-### Creating Tasks
-1. Go to **Tasks > Create New Task**
-2. Fill in task details (title, description, priority)
-3. Assign to a user and/or project
-4. Add observers if needed
-5. Submit and track progress
+1. Navigate to **Network** → **Device Discovery**
+2. Enter IP range (e.g., `192.168.1.0/24`)
+3. Select SNMP version and community string
+4. Click **Start Discovery**
+5. Monitor real-time progress
+6. Review discovered devices in **Network** → **Devices**
 
-### Managing Interventions
-1. Navigate to **Interventions > New Intervention**
-2. Complete intervention details
+### Monitoring Dashboard
+
+- Access Grafana at `http://localhost:3000`
+- View pre-configured dashboards:
+  - **Network Overview**: Device status, availability trends
+  - **Device Details**: Per-device metrics and history
+  - **Alert History**: Recent alerts and resolutions
+
+### Task Management
+
+1. **Tasks** → **Create New**
+2. Enter task details (title, description, priority)
+3. Assign to user/project
+4. Add observers for notifications
+5. Track progress and status updates
+
+### Intervention Workflows
+
+1. **Interventions** → **New Intervention**
+2. Link to related task (optional)
 3. Submit for approval
 4. Track approval status
 5. Rate completed interventions
 
-## 🔧 Configuration
+---
 
-### Queue Configuration
-For background jobs (email notifications, device monitoring):
-```bash
-# Configure in .env
-QUEUE_CONNECTION=database
-# or use Redis for better performance
-QUEUE_CONNECTION=redis
-```
+## 🔒 Security Features
 
-### Task Scheduling
-Add to your crontab for automated monitoring:
-```bash
-* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
-```
+- **CSRF Protection**: All forms protected against cross-site request forgery
+- **XSS Prevention**: Output escaping and Content Security Policy
+- **SQL Injection Prevention**: Eloquent ORM with parameterized queries
+- **Password Security**: Bcrypt hashing with configurable work factor
+- **Rate Limiting**: API and authentication endpoint protection
+- **Role-Based Access Control**: Admin/User permission system
+- **Secure Headers**: HTTPS enforcement, HSTS, X-Frame-Options
+- **Input Validation**: Server-side validation on all requests
+- **Docker Security**: Non-root containers, capability restrictions
 
-### Discovery Settings
-Configure in `config/discovery.php`:
-- Ping timeout
-- SNMP timeout
-- Concurrent discovery limit
-- Device registration settings
+---
 
 ## 🧪 Testing
 
 ```bash
-# Run all tests
-php artisan test
+# PHP/Laravel tests
+docker compose exec php php artisan test
 
-# Run specific test suite
-php artisan test --filter=DeviceDiscoveryTest
+# Python service tests
+docker compose exec python-service pytest -v
 
 # Run with coverage
-php artisan test --coverage
+docker compose exec php php artisan test --coverage
+docker compose exec python-service pytest --cov=. --cov-report=html
 ```
+
+---
 
 ## 📁 Project Structure
 
 ```
-├── app/
-│   ├── Http/Controllers/     # Application controllers
-│   ├── Models/              # Eloquent models
-│   ├── Jobs/                # Queue jobs
-│   ├── Notifications/       # Notification classes
-│   ├── Services/            # Business logic services
-│   └── Policies/            # Authorization policies
+network-monitoring-system/
+├── app/                          # Laravel application
+│   ├── Http/Controllers/         # API & web controllers
+│   ├── Models/                   # Eloquent models
+│   ├── Jobs/                     # Background jobs
+│   ├── Notifications/            # Notification classes
+│   └── Services/                 # Business logic
+├── python-service/               # Python monitoring service
+│   ├── main.py                   # FastAPI application
+│   ├── icmp_poller.py           # Ping implementation
+│   ├── snmp_poller.py           # SNMP queries
+│   ├── metrics.py               # Prometheus metrics
+│   └── database_writer.py       # MySQL integration
 ├── resources/
 │   ├── js/
-│   │   ├── Pages/          # React page components
-│   │   ├── Components/     # Reusable React components
-│   │   └── Layouts/        # Layout components
-│   └── views/              # Blade templates
-├── routes/
-│   ├── web.php             # Web routes
-│   └── auth.php            # Authentication routes
-├── database/
-│   ├── migrations/         # Database migrations
-│   └── seeders/            # Database seeders
-└── config/                 # Configuration files
+│   │   ├── Pages/               # React pages
+│   │   ├── Components/          # Reusable components
+│   │   └── Layouts/             # Layout templates
+│   └── views/                   # Blade templates
+├── docker/
+│   ├── prometheus/              # Prometheus configuration
+│   ├── alertmanager/            # Alertmanager configuration
+│   ├── grafana/                 # Grafana dashboards
+│   └── nginx/                   # Nginx configuration
+├── docker-compose.yml           # Docker orchestration
+└── Dockerfile                   # PHP service image
 ```
 
-## 🔒 Security
-
-- CSRF protection enabled on all forms
-- XSS protection with escaped output
-- SQL injection prevention via Eloquent ORM
-- Password hashing using bcrypt
-- Rate limiting on authentication routes
-- Role-based access control
-- Input validation on all requests
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+---
+
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 👤 Author
 
 **Amine Trabelsi**
-- GitHub: [@trabelssi](https://github.com/trabelssi)
-- **Role**: Intern Software Developer
-- **Company**: Sancella Tunisia
 
-## 🏢 Internship Details
+[![GitHub](https://img.shields.io/badge/GitHub-@trabelssi-181717?style=flat-square&logo=github)](https://github.com/trabelssi)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/trabelssiamine)
 
-This project was developed during an internship at **Sancella Tunisia** as part of a comprehensive IT infrastructure improvement initiative. The system successfully addressed the company's needs for automated network monitoring, device management, and streamlined IT service operations.
-
-**Key Achievements:**
-- Implemented automated SNMP-based network device discovery
-- Developed complete IT ticket management system
-- Created real-time monitoring dashboard
-- Integrated multi-channel notification system
-- Established role-based access control for security
-
-## 🙏 Acknowledgments
-
-- **Sancella Tunisia (SO.TU.PA)** for the internship opportunity and support
-- Internship supervisor and IT team at Sancella Tunisia
-- Laravel Framework
-- React & Inertia.js community
-- Tailwind CSS
-- All open-source contributors
-
-## 📞 Support
-
-For support, please open an issue in the GitHub repository or contact the maintainers.
+**Role**: Software Developer  
+**Company**: Sancella Tunisia
 
 ---
 
-**⭐ If you find this project useful, please consider giving it a star!**
+## 🙏 Acknowledgments
+
+- **Sancella Tunisia (SO.TU.PA)** for project sponsorship and production deployment
+- IT team at Sancella Tunisia for requirements and feedback
+- Open-source communities:
+  - Laravel Framework
+  - React & Inertia.js
+  - Prometheus & Grafana ecosystems
+  - Python FastAPI
+  - Docker community
+
+---
+
+<div align="center">
+
+**⭐ Star this repository if you find it useful!**
+
+**🔗 [Documentation](https://github.com/trabelssi/network-monitoring-system/wiki) • [Report Bug](https://github.com/trabelssi/network-monitoring-system/issues) • [Request Feature](https://github.com/trabelssi/network-monitoring-system/issues)**
+
+</div>
