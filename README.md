@@ -12,8 +12,29 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Docker](https://img.shields.io/badge/Docker-24.x-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 [![Prometheus](https://img.shields.io/badge/Prometheus-3.13-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)](https://prometheus.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 </div>
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Application Gallery](#-application-gallery)
+- [Technology Stack](#-technology-stack)
+- [Architecture](#-architecture)
+- [Quick Start](#-quick-start)
+- [Configuration](#-configuration)
+- [Usage Guide](#-usage-guide)
+- [Security Features](#-security-features)
+- [Testing](#-testing)
+- [Project Structure](#-project-structure)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
+- [Acknowledgments](#-acknowledgments)
 
 ---
 
@@ -23,7 +44,7 @@ A comprehensive network monitoring and IT service management system that provide
 
 <div align="center">
 
-### 🏢 Production Deployment at Sancella Tunisia
+### 🏢 Developed for Sancella Tunisia
 
 **Industry**: Manufacturing - Hygiene & Personal Care Products  
 **Location**: Charguia 1, Tunis, Tunisia  
@@ -65,10 +86,10 @@ A comprehensive network monitoring and IT service management system that provide
 ### 🚨 Smart Alerting System
 
 - **Prometheus-powered metrics** - Industry-standard monitoring
-- **Alertmanager integration** - Intelligent alert routing
+- **Alertmanager integration** - Intelligent alert routing and grouping
 - **Multi-channel notifications** - Email, in-app, and webhook support
-- **Alert deduplication** - Prevent notification fatigue
 - **Escalation policies** - Automatic task creation on device failures
+- **Configurable intervals** - Group wait, group interval, and repeat interval controls
 
 ### 🎫 Complete IT Service Management
 
@@ -246,7 +267,7 @@ Custom alert rules
 
 Alert routing engine  
 Webhook integration  
-Deduplication
+Alert grouping
 
 </td>
 <td width="33%" align="center">
@@ -364,7 +385,7 @@ docker compose exec php php artisan db:seed
 
 - **Application**: http://localhost
 - **Grafana**: http://localhost:3000 (admin/admin_password)
-- **API Documentation**: http://localhost:8000/api/documentation
+- **Python Service Health**: http://localhost:8000/health
 
 **Default Credentials**:
 - Email: `admin@example.com`
@@ -376,47 +397,52 @@ docker compose exec php php artisan db:seed
 
 ## 📊 Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Nginx (Port 80)                           │
-│                     Reverse Proxy & SSL                          │
-└────────────────┬────────────────────────────────────────────────┘
-                 │
-        ┌────────┴────────┐
-        │                 │
-┌───────▼────────┐  ┌────▼──────────┐
-│ Laravel/PHP    │  │ Python        │
-│ ├─ Inertia.js  │  │ FastAPI       │
-│ ├─ Sanctum     │  │ ├─ ICMP Poll  │
-│ ├─ Queue Work  │  │ ├─ SNMP Poll  │
-│ └─ Scheduler   │  │ └─ Metrics    │
-└───────┬────────┘  └────┬──────────┘
-        │                │
-        │                │
-┌───────▼────────────────▼──────────┐
-│         MySQL 8.0                  │
-│      (Persistent Storage)          │
-└────────────────────────────────────┘
-        │
-        │
-┌───────▼────────┐  ┌────────────────┐
-│ Redis 7.x      │  │ Prometheus     │
-│ ├─ Cache       │  │ ├─ Metrics DB  │
-│ ├─ Queue       │  │ ├─ Alert Rules │
-│ └─ Sessions    │  │ └─ 90d Retain  │
-└────────────────┘  └────┬───────────┘
-                         │
-                    ┌────▼───────────┐
-                    │ Alertmanager   │
-                    │ ├─ Routing     │
-                    │ ├─ Webhooks    │
-                    │ └─ Dedupe      │
-                    └────┬───────────┘
-                         │
-                    ┌────▼───────────┐
-                    │ Grafana        │
-                    │ Visualization  │
-                    └────────────────┘
+```mermaid
+graph TB
+    subgraph "Entry Point"
+        Nginx[Nginx :80<br/>Reverse Proxy]
+    end
+    
+    subgraph "Application Layer"
+        PHP[Laravel/PHP<br/>- Inertia.js<br/>- Sanctum Auth<br/>- Queue Worker<br/>- Scheduler]
+        Python[Python FastAPI :8000<br/>- ICMP Polling<br/>- SNMP Polling<br/>- Metrics Export]
+    end
+    
+    subgraph "Data Layer"
+        MySQL[(MySQL 8.0<br/>Persistent Storage)]
+        Redis[(Redis 7.x<br/>Cache/Queue/Session)]
+    end
+    
+    subgraph "Monitoring Stack"
+        Prometheus[Prometheus 3.13<br/>- Metrics DB<br/>- Alert Rules<br/>- 90d Retention]
+        Alertmanager[Alertmanager 0.32<br/>- Alert Routing<br/>- Webhook Integration<br/>- Alert Grouping]
+        Grafana[Grafana 11.x<br/>Visualization]
+    end
+    
+    subgraph "Process Management"
+        Supervisor[Supervisor 4.x<br/>- PHP-FPM<br/>- Queue Worker<br/>- Scheduler]
+    end
+    
+    Nginx --> PHP
+    Nginx --> Python
+    PHP --> MySQL
+    Python --> MySQL
+    PHP --> Redis
+    Python --> Prometheus
+    Prometheus --> Alertmanager
+    Alertmanager -->|Webhook| PHP
+    Grafana --> Prometheus
+    Supervisor -.->|Manages| PHP
+    
+    style Nginx fill:#90EE90
+    style PHP fill:#FF6B6B
+    style Python fill:#4ECDC4
+    style MySQL fill:#45B7D1
+    style Redis fill:#DC382D
+    style Prometheus fill:#E6522C
+    style Alertmanager fill:#FF9F1C
+    style Grafana fill:#F46800
+    style Supervisor fill:#97CA00
 ```
 
 ---
@@ -630,8 +656,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Sancella Tunisia (SO.TU.PA)** for project sponsorship and production deployment
-- IT team at Sancella Tunisia for requirements and feedback
+- **Sancella Tunisia (SO.TU.PA)** for project sponsorship and requirements
+- IT team at Sancella Tunisia for feedback and domain expertise
 - Open-source communities:
   - Laravel Framework
   - React & Inertia.js
